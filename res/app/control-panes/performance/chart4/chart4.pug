@@ -1,0 +1,8 @@
+.widget-container.fluid-height.stf-cpu(ng-controller='Chart4Ctrl')
+  .heading
+    i.fa
+    span(translate) Chart4
+
+  .widget-content.padded
+    svg#chart
+      {{ chart() }}
