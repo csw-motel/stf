@@ -1,41 +1,141 @@
-require('chart.js')
-
 module.exports = function CpuCtrl($scope) {
 
   d3 = require('d3')
 
   $scope.chart = function() {
 
+
+    var t = -1;
+    var n = 40;
+    var v = 0;
+    var data = d3.range(1).map(next);
+
+    function next() {
+      return {
+
+        time: ++t,
+        value: v = Math.floor(Math.random() * 20)
+      };
+    }
+
+
+    var margin = {
+        top: 10,
+        right: 10,
+        bottom: 20,
+        left: 40
+      },
+      width = 400 - margin.left - margin.right,
+      height = 500 - margin.top - margin.bottom;
+
+    var x = d3.scale.linear()
+      .domain([0, 20])
+      .range([0, width]);
+
+    var y = d3.scale.linear()
+      .domain([0, 20])
+      .range([height, 0]);
+
+    var line = d3.svg.line()
+      .x(function(d, i) {
+
+        return x(d.time);
+      })
+      .y(function(d, i) {
+        return y(d.value);
+      });
+
+    var zoom = d3.behavior.zoom()
+      .x(x)
+      //.y(y)
+      .scaleExtent([1, 10])
+      .on("zoom", zoomed);
+
+    function zoomed() {
+      svg.select(".x.axis").call(xAxis);
+      svg.select(".y.axis").call(yAxis);
+      path.attr('transform', 'translate(' + d3.event.translate[0] + ') ' +
+        'scale(' + d3.event.scale + ',1)');
+
+    }
+
+
+    var svg = d3.select('#cpu svg');
+    if (svg.empty()) {
+
+
+      svg = d3.select("#cpu").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g");
+
+      var g = svg.append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top +
+          ")");
+
+      var graph = g.append("svg")
+        .attr("width", width)
+        .attr("height", height + margin.top + margin.bottom)
+        .call(zoom);
+
+      var xAxis = d3.svg.axis().scale(x).orient("bottom");
+      var axis = graph.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+
+      var yAxis = d3.svg.axis().scale(y).orient("left");
+      g.append("g")
+        .attr("class", "y axis")
+        .call(yAxis);
+
+      var path = graph.append("g")
+        .append("path")
+        .data([data])
+        .attr("class", "line")
+        .attr("d", line);
+
+      tick();
+
+      function tick() {
+        // push a new data point onto the back
+        data.push(next());
+
+        // update domain
+        x.domain([0, t]);
+
+        // redraw path, shift path left
+        path
+          .attr("d", line)
+          .attr("transform", null)
+          .transition()
+          .duration(500)
+          .ease("linear")
+          .transition()
+          .attr("transform", "translate(" + t - 1 + ")")
+          .each("end", tick);
+
+        // shift axis left
+        axis
+          .transition()
+          //  .duration(500)
+          .ease("linear")
+          .call(d3.svg.axis().scale(x).orient("bottom"));
+
+
+      }
+    }
+
+
+
     /*
-        var base = d3.select("#myChart");
-        var chart = base.append("canvas")
-          .attr("width", 400)
-          .attr("height", 300);
-
-        var context = chart.node().getContext("2d");
-        var data = [1, 2, 13, 20, 23];
-
-        var scale = d3.scale.linear()
-          .range([10, 390])
-          .domain([1, 23]);
-
-        data.forEach(function(d, i) {
-          context.beginPath();
-          context.rect(scale(d), 150, 10, 10);
-          context.fillStyle = "red";
-          context.fill();
-          context.closePath();
-        });
-        */
-
-
-    d3.select('#cpu')
-      .selectAll("div")
-      .data([4, 8, 15, 16, 23, 42])
-      .enter()
-      .append("div")
-      .style("height", (d) => d + "px")
-
+        d3.select('#cpu')
+          .selectAll("div")
+          .data([4, 8, 15, 16, 23, 42])
+          .enter()
+          .append("div")
+          .style("height", (d) => d + "px")
+    */
 
 
     /*____________________

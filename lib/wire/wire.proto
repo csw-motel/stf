@@ -78,7 +78,9 @@ enum MessageType {
   FileSystemGetMessage       = 82;
   ConnectStartedMessage      = 92;
   ConnectStoppedMessage      = 93;
-  DeviceCpuData              = 112;
+  DevicePerformanceMessage   = 200;
+  PerformanceStartMessage    = 201;
+  PerformanceStopMessage     = 202;
 }
 
 message ConnectStartedMessage {
@@ -564,12 +566,16 @@ message RotationEvent {
   required int32 rotation = 2;
 }
 
-// CpuData
+// Performance
 
+message DevicePerformanceMessage {
 
-message DeviceCpuData {
-required string serial = 1;
-required double date = 2;
-required uint32 pid = 3;
-required uint32 cpu = 4;
+}
+
+message PerformanceStartMessage {
+
+}
+
+message PerformanceStopMessage {
+
 }
