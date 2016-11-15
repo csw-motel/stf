@@ -28,11 +28,6 @@ module.exports =
       icon: 'fa-info color-orange',
       templateUrl: 'control-panes/info/info.pug',
       filters: ['native', 'web']
-    }, {
-      title: gettext('Performance'),
-      icon: 'fa-info color-orange',
-      templateUrl: 'control-panes/performance/performance.pug',
-      filters: ['native', 'web']
     }]
 
     $scope.topTabs = [{
@@ -40,7 +35,12 @@ module.exports =
       icon: 'fa-dashboard fa-fw color-pink',
       templateUrl: 'control-panes/dashboard/dashboard.pug',
       filters: ['native', 'web']
-    }].concat(angular.copy(sharedTabs))
+    }].concat(angular.copy(sharedTabs)).concat([{
+      title: gettext('Performance'),
+      icon: 'fa-info color-orange',
+      templateUrl: 'control-panes/performance/performance.pug',
+      filters: ['native', 'web']
+    }])
 
     $scope.belowTabs = [{
       title: gettext('Logs'),

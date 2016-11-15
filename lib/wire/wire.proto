@@ -568,8 +568,19 @@ message RotationEvent {
 
 // Performance
 
-message DevicePerformanceMessage {
+message Loads {
+  required string key = 1;
+  required int32 value = 2;
+}
 
+message Load {
+  required Loads loads = 1;
+}
+
+
+message DevicePerformanceMessage {
+  required string serial = 1;
+  //required Loads loads = 2;
 }
 
 message PerformanceStartMessage {
