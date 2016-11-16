@@ -78,6 +78,10 @@ enum MessageType {
   FileSystemGetMessage       = 82;
   ConnectStartedMessage      = 92;
   ConnectStoppedMessage      = 93;
+  DeleteDeviceFromUserMessage = 94;
+  AddDeviceToUserMessage     = 95;
+  UserDeviceResponseMessage  = 96;
+
 }
 
 message ConnectStartedMessage {
@@ -277,6 +281,17 @@ message JoinGroupMessage {
   required OwnerMessage owner = 2;
 }
 
+message UserDeviceResponseMessage {
+  required string token = 1;
+  required string serial = 2;
+  required bool response = 3;
+}
+
+message AddDeviceToUserMessage {
+  required string token = 1;
+  required string serial = 2;
+}
+
 message JoinGroupByAdbFingerprintMessage {
   required string serial = 1;
   required string fingerprint = 2;
@@ -297,6 +312,13 @@ message VncAuthResponsesUpdatedMessage {
 }
 
 message LeaveGroupMessage {
+  required string serial = 1;
+  required OwnerMessage owner = 2;
+  required string reason = 3;
+}
+
+//motel message
+message DeleteDeviceFromUserMessage {
   required string serial = 1;
   required OwnerMessage owner = 2;
   required string reason = 3;
