@@ -89,15 +89,17 @@ module.exports = function PerformanceServiceFactory(socket, FilterStringService)
     return data
   }
 
-  socket.on('logcat.entry', function(rawData) {
-    service.numberOfEntries++
-      service.entries.push(enhanceEntry(rawData))
+  socket.on('performance', function(rawData) {
 
-    if (typeof(service.addEntryListener) === 'function') {
-      if (filterLine(rawData)) {
-        service.addEntryListener(rawData)
-      }
-    }
+    console.log("rawdata")
+      /*service.numberOfEntries++
+        service.entries.push(enhanceEntry(rawData))
+
+      if (typeof(service.addEntryListener) === 'function') {
+        if (filterLine(rawData)) {
+          service.addEntryListener(rawData)
+        }
+      }*/
   })
 
   service.clear = function() {
