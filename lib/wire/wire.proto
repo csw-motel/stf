@@ -317,11 +317,9 @@ message LeaveGroupMessage {
   required string reason = 3;
 }
 
-//motel message
 message DeleteDeviceFromUserMessage {
-  required string serial = 1;
-  required OwnerMessage owner = 2;
-  required string reason = 3;
+  required string token = 1;
+  required string serial = 2;
 }
 
 // Input
