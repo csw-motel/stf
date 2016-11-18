@@ -6,17 +6,14 @@ module.exports = function LogcatServiceFactory(socket, FilterStringService) {
   service.started = false
   service.numberOfEntries = 0
 
-  service.serverFilters = [
-    {
-      tag: '',
-      priority: 2
-    }
-  ]
+  service.serverFilters = [{
+    tag: '',
+    priority: 2
+  }]
 
   service.filters = {
     numberOfEntries: 0,
-    entries: [
-    ],
+    entries: [],
     levelNumbers: []
   }
 
@@ -48,8 +45,7 @@ module.exports = function LogcatServiceFactory(socket, FilterStringService) {
     'priority'
   ])
 
-  service.entries = [
-  ]
+  service.entries = []
 
   service.logLevels = [
     'UNKNOWN',
@@ -72,7 +68,10 @@ module.exports = function LogcatServiceFactory(socket, FilterStringService) {
   })
 
   for (var i = 2; i < 8; ++i) {
-    service.filters.levelNumbers.push({number: i, name: logLevelsCapitalized[i]})
+    service.filters.levelNumbers.push({
+      number: i,
+      name: logLevelsCapitalized[i]
+    })
   }
 
   function enhanceEntry(data) {
@@ -92,9 +91,9 @@ module.exports = function LogcatServiceFactory(socket, FilterStringService) {
 
   socket.on('logcat.entry', function(rawData) {
     service.numberOfEntries++
-    service.entries.push(enhanceEntry(rawData))
+      service.entries.push(enhanceEntry(rawData))
 
-    if (typeof (service.addEntryListener) === 'function') {
+    if (typeof(service.addEntryListener) === 'function') {
       if (filterLine(rawData)) {
         service.addEntryListener(rawData)
       }
@@ -109,7 +108,7 @@ module.exports = function LogcatServiceFactory(socket, FilterStringService) {
   service.filters.filterLines = function() {
     service.filters.entries = _.filter(service.entries, filterLine)
 
-    if (typeof (service.addFilteredEntriesListener) === 'function') {
+    if (typeof(service.addFilteredEntriesListener) === 'function') {
       service.addFilteredEntriesListener(service.filters.entries)
     }
   }

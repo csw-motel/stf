@@ -1,128 +1,95 @@
 module.exports = function MemoryCtrl($scope) {
 
-  d3 = require('d3')
+  var d3 = require('d3')
 
   $scope.chart = function() {
-    var t = -1;
-    var n = 40;
-    var v = 0;
-    var data = d3.range(1).map(next);
-
-    function next() {
-      return {
-
-        time: ++t,
-        value: v = Math.floor(Math.random() * 20)
-      };
-    }
-
+    var arrData = [
+      ["2012-10-02", 200],
+      ["2012-10-09", 300],
+      ["2012-10-10", 200],
+      ["2012-10-12", 150]
+    ];
 
     var margin = {
-        top: 10,
-        right: 10,
-        bottom: 20,
-        left: 40
+        top: 20,
+        right: 20,
+        bottom: 30,
+        left: 50
       },
-      width = 400 - margin.left - margin.right,
+      width = 960 - margin.left - margin.right,
       height = 500 - margin.top - margin.bottom;
 
-    var x = d3.scale.linear()
-      .domain([0, 20])
-      .range([0, width]);
+    var parseDate = d3.time.format("%Y-%m-%d").parse;
+
+
+    var x = d3.time.scale()
+      .range([0, width])
 
     var y = d3.scale.linear()
-      .domain([0, 20])
       .range([height, 0]);
 
+    var xAxis = d3.svg.axis()
+      .scale(x)
+      .orient("bottom");
+
+    var yAxis = d3.svg.axis()
+      .scale(y)
+      .orient("left");
+
     var line = d3.svg.line()
-      .x(function(d, i) {
-
-        return x(d.time);
+      .x(function(d) {
+        return x(d.date);
       })
-      .y(function(d, i) {
-        return y(d.value);
+      .y(function(d) {
+        return y(d.close);
       });
-
-    var zoom = d3.behavior.zoom()
-      .x(x)
-      //.y(y)
-      .scaleExtent([1, 10])
-      .on("zoom", zoomed);
-
-    function zoomed() {
-      svg.select(".x.axis").call(xAxis);
-      svg.select(".y.axis").call(yAxis);
-      path.attr('transform', 'translate(' + d3.event.translate[0] + ') ' +
-        'scale(' + d3.event.scale + ',1)');
-
-    }
-
-
-    var svg = d3.select('#memory svg');
+    var svg = d3.select('#memory svg')
     if (svg.empty()) {
 
-
-      svg = d3.select("#memory").append("svg")
+      var svg = d3.select("#memory").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
-        .append("g");
-
-      var g = svg.append("g")
+        .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top +
           ")");
 
-      var graph = g.append("svg")
-        .attr("width", width)
-        .attr("height", height + margin.top + margin.bottom)
-        .call(zoom);
+      var data = arrData.map(function(d) {
+        return {
+          date: parseDate(d[0]),
+          close: d[1]
+        };
 
-      var xAxis = d3.svg.axis().scale(x).orient("bottom");
-      var axis = graph.append("g")
+      });
+
+      console.log(data);
+
+
+      x.domain(d3.extent(data, function(d) {
+        return d.date;
+      }));
+      y.domain(d3.extent(data, function(d) {
+        return d.close;
+      }));
+
+      svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height + ")")
         .call(xAxis);
 
-      var yAxis = d3.svg.axis().scale(y).orient("left");
-      g.append("g")
+      svg.append("g")
         .attr("class", "y axis")
-        .call(yAxis);
+        .call(yAxis)
+        .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", ".71em")
+        .style("text-anchor", "end")
+        .text("Price ($)");
 
-      var path = graph.append("g")
-        .append("path")
-        .data([data])
+      svg.append("path")
+        .datum(data)
         .attr("class", "line")
         .attr("d", line);
-
-      tick();
-
-      function tick() {
-        // push a new data point onto the back
-        data.push(next());
-
-        // update domain
-        x.domain([0, t]);
-
-        // redraw path, shift path left
-        path
-          .attr("d", line)
-          .attr("transform", null)
-          .transition()
-          .duration(500)
-          .ease("linear")
-          .transition()
-          .attr("transform", "translate(" + t - 1 + ")")
-          .each("end", tick);
-
-        // shift axis left
-        axis
-          .transition()
-          //  .duration(500)
-          .ease("linear")
-          .call(d3.svg.axis().scale(x).orient("bottom"));
-
-        // pop the old data point off the front
-        //  data.shift();
-      }
     }
 
   }

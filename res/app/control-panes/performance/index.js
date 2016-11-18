@@ -1,6 +1,6 @@
 require('./performance.css')
 
-module.exports = angular.module('stf.performance', [
+module.exports = angular.module('stf.perf', [
     require('./cpu').name,
     require('./memory').name,
     require('./chart3').name,

@@ -8,3 +8,9 @@
   width: 20px;
   margin-right: 3px;
 }
+
+.line2 {
+    fill: none;
+    stroke: black;
+    stroke-width: 1px;
+}

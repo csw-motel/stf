@@ -1,126 +1,102 @@
- module.exports = function CpuCtrl($scope) {
+module.exports = function CpuCtrl($scope, PerformanceService) {
 
-   $scope.chart = function() {
+  $scope.chart = function() {
+    console.log('' + PerformanceService)
+    var d3 = require('d3')
 
-     var d3 = require('d3')
+    var performanceData = PerformanceService
 
-     var t = -1
-     var n = 40
-     var v = 0
-     var data = d3.range(20).map(next)
+    var margin = {
+        top: 20,
+        right: 20,
+        bottom: 30,
+        left: 50
+      },
+      width = 400 - margin.left - margin.right,
+      height = 300 - margin.top - margin.bottom;
 
-     function next() {
-       return {
-
-         time: ++t,
-         value: v = Math.floor(Math.random() * 20)
-       }
-     }
-
-
-     var margin = {
-         top: 10,
-         right: 10,
-         bottom: 20,
-         left: 40
-       },
-       width = 400 - margin.left - margin.right,
-       height = 500 - margin.top - margin.bottom
-
-     var x = d3.scale.linear()
-       .domain([0, 20])
-       .range([0, width])
-
-     var y = d3.scale.linear()
-       .domain([0, 20])
-       .range([height, 0])
-
-     var line = d3.svg.line()
-       .x(function(d, i) {
-
-         return x(d.time)
-       })
-       .y(function(d, i) {
-         return y(d.value)
-       })
-
-     var zoom = d3.behavior.zoom()
-       .x(x)
-       //.y(y)
-       .scaleExtent([1, 10])
-       .on("zoom", zoomed)
-
-     function zoomed() {
-       svg.select(".x.axis").call(xAxis)
-       svg.select(".y.axis").call(yAxis)
-       path.attr('transform', 'translate(' + d3.event.translate[0] + ') ' +
-         'scale(' + d3.event.scale + ',1)');
-
-     }
-
-     var svg = d3.select('#cpu svg')
-     if (svg.empty()) {
+    var parseDate = d3.time.format("%Y-%m-%d").parse;
 
 
-       svg = d3.select("#cpu").append("svg")
-         .attr("width", width + margin.left + margin.right)
-         .attr("height", height + margin.top + margin.bottom)
-         .append("g");
+    var x = d3.time.scale()
+      .range([0, width])
 
-       var g = svg.append("g")
-         .attr("transform", "translate(" + margin.left + "," + margin.top +
-           ")");
+    var y = d3.scale.linear()
+      .range([height, 0]);
 
-       var graph = g.append("svg")
-         .attr("width", width)
-         .attr("height", height + margin.top + margin.bottom)
-         .call(zoom);
+    var xAxis = d3.svg.axis()
+      .scale(x)
+      .orient("bottom");
 
-       var xAxis = d3.svg.axis().scale(x).orient("bottom");
-       var axis = graph.append("g")
-         .attr("class", "x axis")
-         .attr("transform", "translate(0," + height + ")")
-         .call(xAxis);
+    var yAxis = d3.svg.axis()
+      .scale(y)
+      .orient("left");
 
-       var yAxis = d3.svg.axis().scale(y).orient("left");
-       g.append("g")
-         .attr("class", "y axis")
-         .call(yAxis);
+    var line = d3.svg.line()
+      .x(function(d) {
+        return x(d.date);
+      })
+      .y(function(d) {
+        return y(d.close);
+      });
+    var svg = d3.select('#cpu svg')
+    if (svg.empty()) {
 
-       var path = graph.append("g")
-         .append("path")
-         .data([data])
-         .attr("class", "line")
-         .attr("d", line);
+      svg = d3.select("#cpu").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top +
+          ")");
 
-       tick();
+      var data = performanceData.map(function(d) {
+        return {
+          date: d[0],
+          close: d[1]
+        };
 
-       function tick() {
-         // push a new data point onto the back
-         data.push(next());
+      });
+      var data2 = performanceData.map(function(d) {
+        return {
+          date: d[0],
+          close: d[2]
+        };
 
-         // update domain
-         x.domain([0, t]);
+      });
 
-         // redraw path, shift path left
-         path
-           .attr("d", line)
-           .attr("transform", null)
-           .transition()
-           .duration(500)
-           .ease("linear")
-           .transition()
-           .attr("transform", "translate(" + t - 1 + ")")
-           .each("end", tick);
+      x.domain(d3.extent(data, function(d) {
+        return d.date;
+      }));
 
-         // shift axis left
-         axis
-           .transition()
-           .ease("linear")
-           .call(d3.svg.axis().scale(x).orient("bottom"));
+      y.domain(d3.extent(data, function(d) {
+        return d.close;
+      }));
 
+      svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
 
-       }
-     }
-   }
- }
+      svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis)
+        .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", ".71em")
+        .style("text-anchor", "end")
+
+      var path = svg.append("path")
+        .datum(data)
+        .attr("class", "line")
+        .attr("d", line);
+
+      svg.append("path")
+        .datum(data2)
+        .attr("class", "line2")
+        .attr("d", line);
+
+    }
+
+  }
+}
