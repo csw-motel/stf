@@ -1,5 +1,5 @@
 module.exports = angular.module('stf.performance', [
-    //  require('stf/filter-string').name,
-    require('stf/socket').name
+    require('stf/socket').name,
+    require('stf/control').name
   ])
-  .service('PerformanceService', require('./performance-service'))
+  .factory('PerformanceService', require('./performance-service'))

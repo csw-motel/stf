@@ -1,7 +1,7 @@
 module.exports =
   function ControlPanesController($scope, $http, gettext, $routeParams,
     $timeout, $location, DeviceService, GroupService, ControlService,
-    StorageService, FatalMessageService, SettingsService) {
+    StorageService, FatalMessageService, SettingsService, PerformanceService) {
 
     var sharedTabs = [{
       title: gettext('Screenshots'),
@@ -59,11 +59,13 @@ module.exports =
           return GroupService.invite(device)
         })
         .then(function(device) {
+          //  PerformanceService.startPerformance()
+
           $scope.device = device
           $scope.control = ControlService.create(device, device.channel)
-
-          // TODO: Change title, flickers too much on Chrome
-          // $rootScope.pageTitle = device.name
+          $scope.control.startPerformance()
+            // TODO: Change title, flickers too much on Chrome
+            // $rootScope.pageTitle = device.name
 
           SettingsService.set('lastUsedDevice', serial)
 
