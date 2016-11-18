@@ -1,7 +1,7 @@
 module.exports = function CpuCtrl($scope, PerformanceService) {
 
   $scope.chart = function() {
-    console.log('' + PerformanceService)
+
     var d3 = require('d3')
 
     var performanceData = PerformanceService
@@ -14,8 +14,6 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
       },
       width = 400 - margin.left - margin.right,
       height = 300 - margin.top - margin.bottom;
-
-    var parseDate = d3.time.format("%Y-%m-%d").parse;
 
 
     var x = d3.time.scale()
@@ -37,7 +35,7 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
         return x(d.date);
       })
       .y(function(d) {
-        return y(d.close);
+        return y(d.value);
       });
     var svg = d3.select('#cpu svg')
     if (svg.empty()) {
@@ -52,25 +50,27 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
       var data = performanceData.map(function(d) {
         return {
           date: d[0],
-          close: d[1]
+          value: d[1]
         };
 
       });
       var data2 = performanceData.map(function(d) {
         return {
           date: d[0],
-          close: d[2]
+          value: d[2]
         };
-
       });
+
 
       x.domain(d3.extent(data, function(d) {
         return d.date;
       }));
 
-      y.domain(d3.extent(data, function(d) {
-        return d.close;
-      }));
+      y.domain(d3.extent(d3.extent(data, function(d) {
+        return d.value;
+      }).concat(d3.extent(data2, function(d) {
+        return d.value;
+      }))));
 
       svg.append("g")
         .attr("class", "x axis")
@@ -89,7 +89,7 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
       var path = svg.append("path")
         .datum(data)
         .attr("class", "line")
-        .attr("d", line);
+        .attr("d", line)
 
       svg.append("path")
         .datum(data2)
