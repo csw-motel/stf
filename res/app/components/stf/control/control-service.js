@@ -194,6 +194,10 @@ module.exports = function ControlServiceFactory(
       return sendTwoWay('connect.start')
     }
 
+    this.startPerformance = function() {
+      return sendTwoWay('performance.start')
+    }
+
     this.stopRemoteConnect = function() {
       return sendTwoWay('connect.stop')
     }

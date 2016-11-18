@@ -4,7 +4,7 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
 
     var d3 = require('d3')
 
-    var performanceData = PerformanceService
+    var performanceData = PerformanceService.getPerformanceData
 
     var margin = {
         top: 20,
@@ -97,6 +97,5 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
         .attr("d", line);
 
     }
-
   }
 }

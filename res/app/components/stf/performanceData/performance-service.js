@@ -1,4 +1,5 @@
-module.exports = function PerformanceServiceFactory(socket) {
+module.exports = function PerformanceServiceFactory(socket,
+  ControlService) {
   var performanceData = []
 
   socket.on('device.performance', function(message) {
@@ -12,6 +13,13 @@ module.exports = function PerformanceServiceFactory(socket) {
     performanceData.push(values)
   })
 
-  return performanceData
+  /*  var startPerformance = function() {
+      ControlService.startPerformance()
+    }*/
+
+  return {
+    getPerformanceData: performanceData,
+    //  startPerformance: startPerformance
+  }
 
 }
