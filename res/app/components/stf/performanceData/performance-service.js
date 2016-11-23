@@ -21,9 +21,15 @@ module.exports = function PerformanceServiceFactory(socket,
   //  ControlService.startPerformance()
   //  }
 
+  var stopPerformance = function() {
+    //ControlService.stopPerformance()
+    performanceData = []
+  }
   return {
     getPerformanceData: performanceData,
     //    startPerformance: startPerformance
+    stopPerformance: stopPerformance
+
   }
 
 }

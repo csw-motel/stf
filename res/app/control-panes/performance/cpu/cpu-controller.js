@@ -1,11 +1,12 @@
 module.exports = function CpuCtrl($scope, PerformanceService) {
 
   $scope.chart = function() {
+    var d3 = require('d3')
 
     var update = function() {
 
       var moment = require('moment')
-      var d3 = require('d3')
+
 
       var performanceData = PerformanceService.getPerformanceData
 
@@ -60,24 +61,25 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
           date: d[0],
           value: d[1]
         };
+      })
 
-      });
       var data2 = performanceData.map(function(d) {
         return {
           date: d[0],
           value: d[2]
-        };
-      });
+        }
+      })
+
       var data3 = performanceData.map(function(d) {
         return {
           date: d[0],
           value: d[3]
-        };
-      });
+        }
+      })
 
       x.domain(d3.extent(data, function(d) {
-        return d.date;
-      }));
+        return d.date
+      }))
 
       y.domain([0, d3.max(performanceData, function(d) {
         return Math.max(d[1], d[2], d[3])
