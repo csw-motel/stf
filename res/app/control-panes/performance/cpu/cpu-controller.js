@@ -1,6 +1,7 @@
 module.exports = function CpuCtrl($scope, PerformanceService) {
 
   $scope.chart = function() {
+
     var update = function() {
 
       var moment = require('moment')
