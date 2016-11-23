@@ -59,7 +59,7 @@ module.exports =
           return GroupService.invite(device)
         })
         .then(function(device) {
-          //  PerformanceService.startPerformance()
+          //PerformanceService.startPerformance()
 
           $scope.device = device
           $scope.control = ControlService.create(device, device.channel)
