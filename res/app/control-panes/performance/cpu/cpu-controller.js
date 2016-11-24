@@ -55,28 +55,30 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
           ")");
 
       var parseDate = d3.time.format("%H").parse;
+      var yy
+
 
       var data = performanceData.map(function(d) {
-        return {
-          date: d[0],
-          value: d[1]
-        };
-      })
+          return {
+            date: d[0],
+            value: d[1]
+          };
+        })
+        /*
+              var data2 = performanceData.map(function(d) {
+                return {
+                  date: d[0],
+                  value: d[2]
+                }
+              })
 
-      var data2 = performanceData.map(function(d) {
-        return {
-          date: d[0],
-          value: d[2]
-        }
-      })
-
-      var data3 = performanceData.map(function(d) {
-        return {
-          date: d[0],
-          value: d[3]
-        }
-      })
-
+              var data3 = performanceData.map(function(d) {
+                return {
+                  date: d[0],
+                  value: d[3]
+                }
+              })
+        */
       x.domain(d3.extent(data, function(d) {
         return d.date
       }))
@@ -100,8 +102,21 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
         .attr("dy", ".71em")
         .style("text-anchor", "end")
 
+      for (yy = 1; yy <= PerformanceService.getSize; yy++) {
+        var dataa = performanceData.map(function(d) {
+          return {
+            date: d[0],
+            value: d[yy]
+          };
+        })
+        svg.append("path")
+          .datum(dataa)
+          .attr("class", "line")
+          .attr("d", line)
+          .attr("stroke", "black")
 
-      svg.append("path")
+      }
+      /*  svg.append("path")
         .datum(data)
         .attr("class", "line")
         .attr("d", line)
@@ -111,7 +126,7 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
         .attr("class", "line2")
         .attr("d", line);
 
-      /*  svg.append("path")
+       svg.append("path")
     .datum(data3)
     .attr("class", "line2")
     .attr("d", line);
@@ -119,8 +134,8 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
 
     }
 
-    setInterval(update, 1000)
-
+    //  setInterval(update, 1000)
+    d3.timer(update, 1000)
 
   }
 }
