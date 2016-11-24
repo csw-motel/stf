@@ -1,7 +1,7 @@
 var _ = require('lodash')
 
 module.exports = function DeviceControlCtrl($scope, DeviceService, GroupService,
-  $location, $timeout, $window, $rootScope) {
+  $location, $timeout, $window, $rootScope, PerformanceService) {
 
   $scope.showScreen = true
 
@@ -45,6 +45,8 @@ module.exports = function DeviceControlCtrl($scope, DeviceService, GroupService,
           $scope.$digest()
         })
       }
+      PerformanceService.stopPerformance()
+
       $scope.control.stopPerformance()
     } catch (e) {
       alert(e.message)
