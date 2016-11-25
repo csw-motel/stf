@@ -12,13 +12,17 @@ module.exports = function PerformanceServiceFactory(socket,
 
     values.push(message.date)
     for (var key in Object.keys(message.load)) {
-      values.push(message.load[key].value)
+      if (message.load[key].value != null) {
+        values.push(message.load[key].value)
+      } else {
+        values.push(0)
+      }
       console.log(key + ' ' + message.load[key].value)
     }
     size.pop()
     size.push(message.load.length)
     performanceData.push(values)
-
+      //  console.log(JSON.stringify(performanceData))
   })
 
   //  var startPerformance = function() {
