@@ -288,7 +288,8 @@ message JoinGroupMessage {
 message UserDeviceResponseMessage {
   required string token = 1;
   required string serial = 2;
-  required bool response = 3;
+  required bool success = 3;
+  required string description = 4;
 }
 
 message AddDeviceToUserMessage {
