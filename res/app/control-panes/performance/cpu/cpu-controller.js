@@ -75,7 +75,7 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
         .style("text-anchor", "end")
 
       for (cpuline = 1; cpuline <= PerformanceService.getSize; cpuline++) {
-        var dataa = performanceData.map(function(d) {
+        var data = performanceData.map(function(d) {
           return {
             date: d[0],
             value: d[cpuline]
@@ -83,7 +83,7 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
         })
 
         svg.append("path")
-          .datum(dataa)
+          .datum(data)
           .attr("class", "line")
           .attr("d", line)
       }
