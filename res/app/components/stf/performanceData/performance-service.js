@@ -6,22 +6,23 @@ module.exports = function PerformanceServiceFactory(socket,
   var moment = require('moment')
   socket.on('device.performance', function(message) {
     var values = []
-
+    var str = ""
     values.push(message.date)
     for (var key in Object.keys(message.load)) {
-      values.push(message.load[key].value)
+      //  values.push(message.load[key].value)
+      str += ", " + '"cpu' + key + '" : ' + message.load[key].value
     }
-
-
-    /*performanceData.push({
-      "timestamp": message.date,
-      "values": message.load
-    });*/
+    //console.log(str)
+    var jsonStr = '{ ' + '"date" : ' + '"' + message.date + '"' +
+      str + ' }'
+      //  console.log(JSON.parse(jsonStr))
+    performanceData.push(JSON.parse(jsonStr))
+      //console.log(JSON.stringify(performanceData))
 
     // TO DO - Improve this piece of code
     size.pop()
     size.push(message.load.length)
-    performanceData.push(values)
+      //  performanceData.push(values)
 
   })
 

@@ -55,8 +55,9 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
       var cpuline
 
       x.domain(d3.extent(performanceData, function(d) {
-        return new Date(d[0] * 1000)
-      }))
+        return new Date(d.date * 1000);
+      }));
+
 
       y.domain([0, 100])
 
@@ -74,27 +75,43 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
         .attr("dy", ".71em")
         .style("text-anchor", "end")
 
+      var color = d3.scale.ordinal().range(["#FF0000", "#FFFF00",
+        "#2c7bb6", "#FF00FF"
+      ]);
 
 
-      for (cpuline = 1; cpuline <= PerformanceService.getSize; cpuline++) {
-        var data = performanceData.map(function(d) {
+      color.domain(d3.keys(performanceData[0]).filter(function(key) {
+        return key !== "date";
+      }));
 
-          return {
-            date: new Date(d[0] * 1000),
-            value: d[cpuline]
-          }
+      var cpus = color.domain().map(function(name) {
+        return {
+          name: name,
+          values: performanceData.map(function(d) {
+            return {
+              date: new Date(d.date * 1000),
+              value: +d[name]
+            };
+          })
+        };
+      });
+
+      var cpu = svg.selectAll(".cpu")
+        .data(cpus)
+        .enter().append("g")
+        .attr("class", "cpu")
+
+      cpu.append("path")
+        .attr("class", "line")
+        .attr("d", function(d) {
+          return line(d.values)
         })
-
-        svg.append("path")
-          .datum(data)
-          .attr("class", "line")
-          .attr("d", line)
-      }
-
+        .style("stroke", function(d) {
+          return color(d.name)
+        })
 
     }
 
-    //  setInterval(update, 1000)
     d3.timer(update, 1000)
 
   }
