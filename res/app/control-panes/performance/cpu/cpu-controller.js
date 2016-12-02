@@ -51,11 +51,11 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
         .attr("transform", "translate(" + margin.left + "," + margin.top +
           ")")
 
-      var parseDate = d3.time.format("%H").parse
+      var parseDate = d3.time.format("%H:%M:%S")
       var cpuline
 
       x.domain(d3.extent(performanceData, function(d) {
-        return d[0]
+        return new Date(d[0] * 1000)
       }))
 
       y.domain([0, 100])
@@ -74,10 +74,13 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
         .attr("dy", ".71em")
         .style("text-anchor", "end")
 
+
+
       for (cpuline = 1; cpuline <= PerformanceService.getSize; cpuline++) {
         var data = performanceData.map(function(d) {
+
           return {
-            date: d[0],
+            date: new Date(d[0] * 1000),
             value: d[cpuline]
           }
         })
@@ -87,6 +90,7 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
           .attr("class", "line")
           .attr("d", line)
       }
+
 
     }
 
