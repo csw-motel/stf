@@ -96,6 +96,33 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
         };
       });
 
+      var legend = svg.selectAll('.g')
+        .data(cpus)
+        .enter()
+        .append('g')
+        .attr('class', 'legend');
+
+      legend.append('rect')
+        .attr('x', width - 20)
+        .attr('y', function(d, i) {
+          return i * 20;
+        })
+        .attr('width', 10)
+        .attr('height', 10)
+        .style('fill', function(d) {
+          return color(d.name);
+        });
+
+      legend.append('text')
+        .attr('x', width - 8)
+        .attr('y', function(d, i) {
+          return (i * 20) + 9;
+        })
+        .text(function(d) {
+          return d.name;
+        });
+
+
       var cpu = svg.selectAll(".cpu")
         .data(cpus)
         .enter().append("g")
