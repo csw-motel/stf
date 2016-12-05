@@ -5,8 +5,6 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
 
     var update = function() {
 
-      var moment = require('moment')
-
       var performanceData = PerformanceService.getPerformanceData
 
       var margin = {
@@ -15,8 +13,10 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
           bottom: 30,
           left: 50
         },
-        width = 400 - margin.left - margin.right,
-        height = 300 - margin.top - margin.bottom
+        width = parseInt(d3.select("#cpu").style("width")) - margin.left -
+        margin.right,
+        height = parseInt(d3.select("#cpu").style("height")) - margin.top -
+        margin.bottom
 
       var x = d3.time.scale()
         .range([0, width])
