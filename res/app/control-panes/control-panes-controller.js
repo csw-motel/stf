@@ -37,7 +37,7 @@ module.exports =
       filters: ['native', 'web']
     }].concat(angular.copy(sharedTabs)).concat([{
       title: gettext('Performance'),
-      icon: 'fa-info color-orange',
+      icon: 'fa-area-chart color-red',
       templateUrl: 'control-panes/performance/performance.pug',
       filters: ['native', 'web']
     }])
