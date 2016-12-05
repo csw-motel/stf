@@ -85,7 +85,7 @@ enum MessageType {
   PerformanceStartMessage    = 201;
   PerformanceStopMessage     = 202;
   Load = 204;
-
+  DeviceIdentityMotelMessage =205;
 }
 
 message ConnectStartedMessage {
@@ -595,7 +595,6 @@ message RotationEvent {
   required uint32 value = 2;
 }
 
-
 message DevicePerformanceMessage {
   required string serial = 1;
   required double date = 2;
@@ -608,4 +607,9 @@ message PerformanceStartMessage {
 
 message PerformanceStopMessage {
 
+}
+
+message DeviceIdentityMotelMessage {
+  required DeviceIdentityMessage  deviceIdentityMessage = 1;
+  required ProviderMessage provider = 2;
 }

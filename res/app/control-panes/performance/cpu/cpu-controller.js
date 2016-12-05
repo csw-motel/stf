@@ -75,9 +75,10 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
         .attr("dy", ".71em")
         .style("text-anchor", "end")
 
-      var color = d3.scale.ordinal().range(["#FF0000", "#FFFF00",
-        "#2c7bb6", "#FF00FF"
-      ]);
+      var color = d3.scale.ordinal().range(["#FF0000",
+        "#000000", "#2c7bb6", "#FF00FF", "#FFCC00", "#6B238E",
+        "#FF6600", "#33ff33"
+      ])
 
 
       color.domain(d3.keys(performanceData[0]).filter(function(key) {
