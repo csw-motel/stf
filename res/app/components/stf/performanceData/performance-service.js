@@ -1,11 +1,12 @@
 module.exports = function PerformanceServiceFactory(socket,
   ControlService) {
-  var performanceData = []
+  var cpuData = []
+  var memoryData = []
 
   socket.on('device.performance', function(message) {
-    var values = []
+
     var str = ""
-    values.push(message.date)
+
     for (var key in Object.keys(message.load)) {
       str += ", " + '"cpu ' + key + '" : ' + message.load[key].value
     }
@@ -13,21 +14,41 @@ module.exports = function PerformanceServiceFactory(socket,
     var jsonStr = '{ ' + '"date" : ' + '"' + message.date + '"' +
       str + ' }'
 
-    performanceData.push(JSON.parse(jsonStr))
+    cpuData.push(JSON.parse(jsonStr))
   })
 
-  //  var startPerformance = function() {
-  //  ControlService.startPerformance()
-  //  }
+  socket.on('device.memoryPerformance', function(message) {
 
-  //  var stopPerformance = function() {
-  //ControlService.stopPerformance()
-  //  performanceData = []
-  //  }
+    var str = ""
+
+    //for (var key in Object.keys(message.load)) {
+
+    str += ', "Memory used" : ' + (message.load[0].value - message.load[1]
+      .value) / 1024
+
+    //  }
+
+    var jsonStr = '{ ' + '"date" : ' + '"' + message.date + '"' +
+      str + ' }'
+
+    memoryData.push(JSON.parse(jsonStr))
+  })
+
+  var startPerformance = function() {
+    //  ControlService.startPerformance()
+    performanceData = []
+  }
+
+  var stopPerformance = function() {
+    //ControlService.stopPerformance()
+    performanceData = []
+    console.log(JSON.stringify(performanceData));
+  }
   return {
-    getPerformanceData: performanceData,
-    //    startPerformance: startPerformance
-    //  stopPerformance: stopPerformance
+    getPerformanceData: cpuData,
+    startPerformance: startPerformance,
+    stopPerformance: stopPerformance,
+    getMemoryData: memoryData
   }
 
 

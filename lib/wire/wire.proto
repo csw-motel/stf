@@ -86,6 +86,9 @@ enum MessageType {
   PerformanceStopMessage     = 202;
   Load = 204;
   DeviceIdentityMotelMessage =205;
+  DeviceMemoryPerformanceMessage   = 206;
+  LoadMemory = 207;
+
 }
 
 message ConnectStartedMessage {
@@ -612,4 +615,16 @@ message PerformanceStopMessage {
 message DeviceIdentityMotelMessage {
   required DeviceIdentityMessage  deviceIdentityMessage = 1;
   required ProviderMessage provider = 2;
+}
+
+message DeviceMemoryPerformanceMessage {
+  required string serial = 1;
+  required double date = 2;
+  repeated LoadMemory load = 3;
+
+}
+
+message LoadMemory {
+  required string memory = 1;
+  required uint32 value = 2;
 }
