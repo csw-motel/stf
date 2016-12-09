@@ -3,7 +3,7 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
   var d3 = require('d3')
 
   var update = function() {
-    var performanceData = PerformanceService.getMemoryData
+    var memoryData = PerformanceService.getMemoryData
     var margin = {
         top: 20,
         right: 20,
@@ -47,6 +47,7 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
       .y(function(d) {
         return y(d.value)
       })
+      .interpolate("basis")
 
     var svg = d3.select('#memory svg')
 
@@ -60,12 +61,12 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
         ")")
 
 
-    x.domain(d3.extent(performanceData, function(d) {
+    x.domain(d3.extent(memoryData, function(d) {
       return new Date(d.date * 1000);
     }));
 
 
-    y.domain([0, 2000])
+    y.domain([0, PerformanceService.getMemTotal])
 
     svg.append("g")
       .attr("class", "x axis")
@@ -80,18 +81,19 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
       .attr("y", 6)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
+      .text("MB")
 
     var color = d3.scale.ordinal().range(["#b0c4de"])
 
 
-    color.domain(d3.keys(performanceData[0]).filter(function(key) {
+    color.domain(d3.keys(memoryData[0]).filter(function(key) {
       return key !== "date";
     }));
 
     var memorys = color.domain().map(function(name) {
       return {
         name: name,
-        values: performanceData.map(function(d) {
+        values: memoryData.map(function(d) {
           return {
             date: new Date(d.date * 1000),
             value: +d[name]

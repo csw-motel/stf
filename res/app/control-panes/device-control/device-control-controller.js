@@ -46,7 +46,7 @@ module.exports = function DeviceControlCtrl($scope, DeviceService, GroupService,
         })
       }
       $scope.control.stopPerformance()
-        //PerformanceService.stopPerformance()
+      PerformanceService.stopPerformance()
 
     } catch (e) {
       alert(e.message)
