@@ -2,13 +2,7 @@ module.exports = function PerformanceServiceFactory(socket,
   ControlService) {
   var cpuData = []
   var memoryData = []
-<<<<<<< HEAD
-var memTotal=[]
-  socket.on('device.performance', function(message) {
-=======
   var memTotal = []
-
->>>>>>> stf_AA
 
   socket.on('device.performance', function(message) {
     var str = ""
@@ -23,14 +17,8 @@ var memTotal=[]
 
   socket.on('device.memoryPerformance', function(message) {
     var str = ""
-<<<<<<< HEAD
 
-    //for (var key in Object.keys(message.load)) {
-memTotal.pop()
-memTotal.push(message.load[0].value / 1024)
-=======
     setMemTotal([message.load[0].value / 1024])
->>>>>>> stf_AA
     str += ', "Memory used" : ' + (message.load[0].value - message.load[1]
       .value) / 1024
     var jsonStr = '{ ' + '"date" : ' + '"' + message.date + '"' +
@@ -41,20 +29,12 @@ memTotal.push(message.load[0].value / 1024)
 
   var startPerformance = function() {
     //  ControlService.startPerformance()
-<<<<<<< HEAD
-
-=======
->>>>>>> stf_AA
   }
 
   var stopPerformance = function() {
     //ControlService.stopPerformance()
-<<<<<<< HEAD
-
-=======
     setCpuData([])
     setMemoryData([])
->>>>>>> stf_AA
   }
 
   function setCpuData(values) {
