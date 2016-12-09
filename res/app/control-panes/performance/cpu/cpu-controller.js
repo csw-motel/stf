@@ -1,6 +1,5 @@
 module.exports = function CpuCtrl($scope, PerformanceService) {
 
-  //  $scope.chart = function() {
   var d3 = require('d3')
 
   var update = function() {
@@ -14,10 +13,8 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
       },
       width = parseInt(d3.select("#cpu").style("width")) - margin.left -
       margin.right,
-      //  width = 400 - margin.left - margin.right,
       height = parseInt(d3.select("#cpu").style("height")) - margin.top -
       margin.bottom
-      //  height = 300 - margin.top - margin.bottom
 
     var x = d3.time.scale()
       .range([0, width])
@@ -141,7 +138,5 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
 
   }
   setInterval(update, 1000)
-    //  d3.timer(update, 1000)
 
-  //  }
 }

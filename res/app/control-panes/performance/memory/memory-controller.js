@@ -3,7 +3,7 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
   var d3 = require('d3')
 
   var update = function() {
-    var performanceData = PerformanceService.getMemoryData
+    var memoryData = PerformanceService.getMemoryData
     var margin = {
         top: 20,
         right: 20,
@@ -12,10 +12,8 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
       },
       width = parseInt(d3.select("#memory").style("width")) - margin.left -
       margin.right,
-      //  width = 400 - margin.left - margin.right,
       height = parseInt(d3.select("#memory").style("height")) - margin.top -
       margin.bottom
-      //height = 300 - margin.top - margin.bottom
 
     var x = d3.time.scale()
       .range([0, width])
@@ -60,7 +58,8 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
       .attr("transform", "translate(" + margin.left + "," + margin.top +
         ")")
 
-    x.domain(d3.extent(performanceData, function(d) {
+
+    x.domain(d3.extent(memoryData, function(d) {
       return new Date(d.date * 1000);
     }));
 
@@ -80,18 +79,19 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
       .attr("y", 6)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
+      .text("MB")
 
     var color = d3.scale.ordinal().range(["#b0c4de"])
 
 
-    color.domain(d3.keys(performanceData[0]).filter(function(key) {
+    color.domain(d3.keys(memoryData[0]).filter(function(key) {
       return key !== "date";
     }));
 
     var memorys = color.domain().map(function(name) {
       return {
         name: name,
-        values: performanceData.map(function(d) {
+        values: memoryData.map(function(d) {
           return {
             date: new Date(d.date * 1000),
             value: +d[name]
@@ -126,8 +126,6 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
         return d.name;
       });
 
-
-
     var memory = svg.selectAll(".memory")
       .data(memorys)
       .enter().append("g")
@@ -144,6 +142,4 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
 
   }
   setInterval(update, 1000)
-    //  d3.timer(update, 1000)
-
 }
