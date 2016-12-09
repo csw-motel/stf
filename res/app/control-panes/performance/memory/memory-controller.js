@@ -47,6 +47,7 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
       .y(function(d) {
         return y(d.value)
       })
+      .interpolate("basis")
 
     var svg = d3.select('#memory svg')
 
@@ -59,13 +60,12 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
       .attr("transform", "translate(" + margin.left + "," + margin.top +
         ")")
 
-
     x.domain(d3.extent(performanceData, function(d) {
       return new Date(d.date * 1000);
     }));
 
 
-    y.domain([0, 2000])
+    y.domain([0, PerformanceService.getMemTotal])
 
     svg.append("g")
       .attr("class", "x axis")

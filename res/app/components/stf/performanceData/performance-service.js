@@ -2,7 +2,7 @@ module.exports = function PerformanceServiceFactory(socket,
   ControlService) {
   var cpuData = []
   var memoryData = []
-
+var memTotal=[]
   socket.on('device.performance', function(message) {
 
     var str = ""
@@ -22,7 +22,8 @@ module.exports = function PerformanceServiceFactory(socket,
     var str = ""
 
     //for (var key in Object.keys(message.load)) {
-
+memTotal.pop()
+memTotal.push(message.load[0].value / 1024)
     str += ', "Memory used" : ' + (message.load[0].value - message.load[1]
       .value) / 1024
 
@@ -36,19 +37,19 @@ module.exports = function PerformanceServiceFactory(socket,
 
   var startPerformance = function() {
     //  ControlService.startPerformance()
-    performanceData = []
+
   }
 
   var stopPerformance = function() {
     //ControlService.stopPerformance()
-    performanceData = []
-    console.log(JSON.stringify(performanceData));
+
   }
   return {
     getPerformanceData: cpuData,
     startPerformance: startPerformance,
     stopPerformance: stopPerformance,
-    getMemoryData: memoryData
+    getMemoryData: memoryData,
+    getMemTotal: memTotal
   }
 
 
