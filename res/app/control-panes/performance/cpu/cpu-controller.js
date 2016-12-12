@@ -70,13 +70,21 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
       .attr("transform", "rotate(-90)")
       .attr("y", 6)
       .attr("dy", ".71em")
-      .style("text-anchor", "end")
-      .text("%")
+
 
     var color = d3.scale.ordinal().range(["#33cc33",
       "#0099ff", "#ff9900", "#FF00FF", "#0D7AFF", "#6B238E",
       "#FF6600", "#33ff33"
     ])
+
+    //Create Y axis label
+    svg.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0 - margin.left)
+      .attr("x", 0 - (height / 2))
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+      .text("%");
 
 
     color.domain(d3.keys(performanceData[0]).filter(function(key) {
