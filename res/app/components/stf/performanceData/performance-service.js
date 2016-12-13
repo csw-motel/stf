@@ -4,7 +4,6 @@ module.exports = function PerformanceServiceFactory(socket,
   var memoryData = []
   var memTotal = []
 
-
   socket.on('device.performance', function(message) {
     var str = ""
     for (var key in Object.keys(message.load)) {
@@ -18,6 +17,7 @@ module.exports = function PerformanceServiceFactory(socket,
 
   socket.on('device.memoryPerformance', function(message) {
     var str = ""
+
     setMemTotal([message.load[0].value / 1024])
     str += ', "Memory used" : ' + (message.load[0].value - message.load[1]
       .value) / 1024

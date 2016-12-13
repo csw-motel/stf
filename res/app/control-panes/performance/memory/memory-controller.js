@@ -12,10 +12,8 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
       },
       width = parseInt(d3.select("#memory").style("width")) - margin.left -
       margin.right,
-      //  width = 400 - margin.left - margin.right,
       height = parseInt(d3.select("#memory").style("height")) - margin.top -
       margin.bottom
-      //height = 300 - margin.top - margin.bottom
 
     var x = d3.time.scale()
       .range([0, width])
@@ -31,6 +29,21 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
       .scale(y)
       .orient("left")
 
+    // function for the x grid lines
+    function make_x_axis() {
+      return d3.svg.axis()
+        .scale(x)
+        .orient("bottom")
+        .ticks(5)
+    }
+
+    // function for the y grid lines
+    function make_y_axis() {
+      return d3.svg.axis()
+        .scale(y)
+        .orient("left")
+        .ticks(5)
+    }
     var area = d3.svg.area()
       .x(function(d) {
         return x(d.date);
@@ -60,6 +73,22 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
       .attr("transform", "translate(" + margin.left + "," + margin.top +
         ")")
 
+    // Draw the x Grid lines
+    svg.append("g")
+      .attr("class", "grid")
+      .attr("transform", "translate(0," + height + ")")
+      .call(make_x_axis()
+        .tickSize(-height, 0, 0)
+        .tickFormat("")
+      )
+
+    // Draw the y Grid lines
+    svg.append("g")
+      .attr("class", "grid")
+      .call(make_y_axis()
+        .tickSize(-width, 0, 0)
+        .tickFormat("")
+      )
 
     x.domain(d3.extent(memoryData, function(d) {
       return new Date(d.date * 1000);
@@ -80,8 +109,14 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
       .attr("transform", "rotate(-90)")
       .attr("y", 6)
       .attr("dy", ".71em")
-      .style("text-anchor", "end")
-      .text("MB")
+      //Create Y axis label
+    svg.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0 - margin.left)
+      .attr("x", 0 - (height / 2))
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+      .text("MB");
 
     var color = d3.scale.ordinal().range(["#b0c4de"])
 
@@ -128,8 +163,6 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
         return d.name;
       });
 
-
-
     var memory = svg.selectAll(".memory")
       .data(memorys)
       .enter().append("g")
@@ -146,6 +179,4 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
 
   }
   setInterval(update, 1000)
-    //  d3.timer(update, 1000)
-
 }
