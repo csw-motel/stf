@@ -84,10 +84,12 @@ enum MessageType {
   DevicePerformanceMessage   = 200;
   PerformanceStartMessage    = 201;
   PerformanceStopMessage     = 202;
-  Load = 204;
-  DeviceIdentityMotelMessage =205;
-  DeviceMemoryPerformanceMessage   = 206;
-  LoadMemory = 207;
+  Load                       = 204;
+  DeviceIdentityMotelMessage = 205;
+  DeviceMemoryPerformanceMessage = 206;
+  LoadMemory                 = 207;
+  TokenAuthMessage           = 208;
+  AuthResponseMessage        = 209;
 
 }
 
@@ -627,4 +629,15 @@ message DeviceMemoryPerformanceMessage {
 message LoadMemory {
   required string memory = 1;
   required uint32 value = 2;
+}
+
+message TokenAuthMessage {
+  required string token = 1;
+}
+
+message AuthResponseMessage {
+  required bool authorized = 1;
+  required string token = 2;
+  required string description = 3;
+  optional string useremail = 4;
 }
