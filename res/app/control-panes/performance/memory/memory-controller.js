@@ -1,182 +1,170 @@
 module.exports = function MemoryCtrl($scope, PerformanceService) {
 
   var d3 = require('d3')
+    /*
+      var chart = require('./../chart.js')
+      var width = 400 - commons.margin.left -
+        commons.margin.right
+      var height = 250 - commons.margin.top -
+        commons.margin.bottom
 
-  var margin = {
-      top: 20,
-      right: 20,
-      bottom: 50,
-      left: 50
-    },
-    width = 500 - margin.left -
-    margin.right,
-    height = 250 - margin.top -
-    margin.bottom
+      commons.x.range([0, width])
 
-  var x = d3.time.scale()
-    .range([0, width])
+        // function for the x grid lines
+        function make_x_axis() {
+          return d3.svg.axis()
+            .scale(chart.x)
+            .orient('bottom')
+            .ticks(5)
+        }
 
-  var y = d3.scale.linear()
-    .range([height, 0])
+        // function for the y grid lines
+        function make_y_axis() {
+          return d3.svg.axis()
+            .scale(chart.y)
+            .orient('left')
+            .ticks(5)
+        }
+        var area = d3.svg.area()
+          .x(function(d) {
+            return chart.x(d.date)
+          })
+          .y0(chart.height)
+          .y1(function(d) {
+            return chart.y(d.value)
+          })
 
-  var xAxis = d3.svg.axis()
-    .scale(x)
-    .orient('bottom')
+        var line = d3.svg.line()
+          .x(function(d) {
+            return chart.x(d.date)
+          })
+          .y(function(d) {
+            return chart.y(d.value)
+          })
+          .interpolate('basis')
 
-  var yAxis = d3.svg.axis()
-    .scale(y)
-    .orient('left')
+        var svg = d3.select('#memory svg')
 
-  // function for the x grid lines
-  function make_x_axis() {
-    return d3.svg.axis()
-      .scale(x)
-      .orient('bottom')
-      .ticks(5)
-  }
+        svg = d3.select('#memory').append('svg')
+          .attr('width', chart.width + chart.margin.left + chart.margin.right)
+          .attr('height', chart.height + chart.margin.top + chart.margin.bottom)
+          .append('g')
+          .attr('transform', 'translate(' + chart.margin.left + ',' + chart.margin.top +
+            ')')
 
-  // function for the y grid lines
-  function make_y_axis() {
-    return d3.svg.axis()
-      .scale(y)
-      .orient('left')
-      .ticks(5)
-  }
-  var area = d3.svg.area()
-    .x(function(d) {
-      return x(d.date)
-    })
-    .y0(height)
-    .y1(function(d) {
-      return y(d.value)
-    })
+        // Draw the x Grid lines
+        svg.append('g')
+          .attr('class', 'grid')
+          .attr('transform', 'translate(0,' + chart.height + ')')
+          .call(make_x_axis()
+            .tickSize(-chart.height, 0, 0)
+            .tickFormat('')
+          )
 
-  var line = d3.svg.line()
-    .x(function(d) {
-      return x(d.date)
-    })
-    .y(function(d) {
-      return y(d.value)
-    })
-    .interpolate('basis')
+        // Draw the y Grid lines
+        svg.append('g')
+          .attr('class', 'grid')
+          .call(make_y_axis()
+            .tickSize(-chart.width, 0, 0)
+            .tickFormat('')
+          )
 
-  var svg = d3.select('#memory svg')
+        chart.y.range([height, 0]).domain([0, PerformanceService.getMemTotal])
 
-  svg = d3.select('#memory').append('svg')
-    .attr('width', width + margin.left + margin.right)
-    .attr('height', height + margin.top + margin.bottom)
-    .append('g')
-    .attr('transform', 'translate(' + margin.left + ',' + margin.top +
-      ')')
+        var y_axis = svg.append('g')
+          .attr('class', 'y axis')
+          .call(chart.yAxis)
+          .append('text')
+          .attr('transform', 'rotate(-90)')
+          .attr('y', 6)
+          .attr('dy', '.71em')
+          //Create Y axis label
+        svg.append('text')
+          .attr('transform', 'rotate(-90)')
+          .attr('y', 0 - chart.margin.left)
+          .attr('x', 0 - (chart.height / 2))
+          .attr('dy', '1em')
+          .style('text-anchor', 'middle')
+          .text('MB')
 
-  // Draw the x Grid lines
-  svg.append('g')
-    .attr('class', 'grid')
-    .attr('transform', 'translate(0,' + height + ')')
-    .call(make_x_axis()
-      .tickSize(-height, 0, 0)
-      .tickFormat('')
-    )
+        var color = d3.scale.ordinal().range(['#b0c4de'])
 
-  // Draw the y Grid lines
-  svg.append('g')
-    .attr('class', 'grid')
-    .call(make_y_axis()
-      .tickSize(-width, 0, 0)
-      .tickFormat('')
-    )
+        var legend = svg.selectAll('.g')
+          //.data(memorys)
+          //.enter()
+          //.append('g')
+          //  .attr('class', 'legend')
+        legend.append('rect')
+          .attr('y', chart.height + 30)
+          .attr('x', function(d, i) {
+            return i * 45
+          })
+          .attr('width', 10)
+          .attr('height', 10)
+          .style('fill', function(d) {
+            return color(d.name)
+          })
 
-  y.domain([0, PerformanceService.getMemTotal])
+        legend.append('text')
+          .attr('y', chart.height + 40)
+          .attr('x', function(d, i) {
+            return (i * 45) + 15
+          })
+          .text(function(d) {
+            return d.name
+          })
 
-  var y_axis = svg.append('g')
-    .attr('class', 'y axis')
-    .call(yAxis)
-    .append('text')
-    .attr('transform', 'rotate(-90)')
-    .attr('y', 6)
-    .attr('dy', '.71em')
-    //Create Y axis label
-  svg.append('text')
-    .attr('transform', 'rotate(-90)')
-    .attr('y', 0 - margin.left)
-    .attr('x', 0 - (height / 2))
-    .attr('dy', '1em')
-    .style('text-anchor', 'middle')
-    .text('MB')
-
-  var color = d3.scale.ordinal().range(['#b0c4de'])
-
-  var legend = svg.selectAll('.g')
-    //.data(memorys)
-    //.enter()
-    //.append('g')
-    //  .attr('class', 'legend')
-  legend.append('rect')
-    .attr('y', height + 30)
-    .attr('x', function(d, i) {
-      return i * 45
-    })
-    .attr('width', 10)
-    .attr('height', 10)
-    .style('fill', function(d) {
-      return color(d.name)
-    })
-
-  legend.append('text')
-    .attr('y', height + 40)
-    .attr('x', function(d, i) {
-      return (i * 45) + 15
-    })
-    .text(function(d) {
-      return d.name
-    })
-
-  var x_axis = svg.append('g')
-    .attr('class', 'x axis')
-    .attr('transform', 'translate(0,' + height + ')')
-    .call(xAxis)
+        var x_axis = svg.append('g')
+          .attr('class', 'x axis')
+          .attr('transform', 'translate(0,' + chart.height + ')')
+          .call(chart.xAxis)
 
 
-  var update = function() {
-    var memoryData = PerformanceService.getMemoryData
-    console.log(JSON.stringify(memoryData))
-    x.domain(d3.extent(memoryData, function(d) {
-      return new Date(d.date * 1000)
-    }))
+        var update = function() {
+          var memoryData = PerformanceService.getMemoryData
+          chart.x.domain(d3.extent(memoryData, function(d) {
+            return new Date(d.date * 1000)
+          }))
 
-    x_axis.call(xAxis)
-    color.domain(d3.keys(memoryData[0]).filter(function(key) {
-      return key !== 'date'
-    }))
+          x_axis.call(chart.xAxis)
+          color.domain(d3.keys(memoryData[0]).filter(function(key) {
+            return key !== 'date'
+          }))
 
-    var memorys = color.domain().map(function(name) {
-      return {
-        name: name,
-        values: memoryData.map(function(d) {
-          return {
-            date: new Date(d.date * 1000),
-            value: +d[name]
-          }
-        })
-      }
-    })
+          var memorys = color.domain().map(function(name) {
+            return {
+              name: name,
+              values: memoryData.map(function(d) {
+                return {
+                  date: new Date(d.date * 1000),
+                  value: +d[name]
+                }
+              })
+            }
+          })
 
-    var memory = svg.selectAll('.memory')
-      .data(memorys)
-      .enter().append('g')
-      .attr('class', 'memory')
+          var memory = svg.selectAll('.memory')
+            .data(memorys)
+            .enter().append('g')
+            .attr('class', 'memory')
+            .call(d3.behavior.zoom().scaleExtent([0.15, 12]).on("zoom", function() {
+              x_axis.call(xAxis);
+              memory.attr("transform", "translate(" + d3.event.translate +
+                ")" +
+                " scale(" + d3.event.scale + ")")
+            }))
 
-    var path = memory.append('path')
-      .attr('class', 'area')
-      .attr('d', function(d) {
-        return area(d.values)
-      })
-      .style('stroke', function(d) {
-        return color(d.name)
-      })
-  }
+          var path = memory.append('path')
+            .attr('class', 'area')
+            .attr('d', function(d) {
+              return area(d.values)
+            })
+            .style('stroke', function(d) {
+              return color(d.name)
+            })
+        }
 
-  setInterval(update, 1000)
+        setInterval(update, chart.interval)
 
-
+      */
 }
