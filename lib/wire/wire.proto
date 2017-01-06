@@ -81,10 +81,10 @@ enum MessageType {
   DeleteDeviceFromUserMessage = 94;
   AddDeviceToUserMessage     = 95;
   UserDeviceResponseMessage  = 96;
-  DevicePerformanceMessage   = 200;
+  DeviceCpuPerformanceMessage   = 200;
   PerformanceStartMessage    = 201;
   PerformanceStopMessage     = 202;
-  Load = 204;
+  LoadCpu = 204;
   DeviceIdentityMotelMessage =205;
   DeviceMemoryPerformanceMessage   = 206;
   LoadMemory = 207;
@@ -593,15 +593,15 @@ message RotationEvent {
 
 // Performance
 
- message Load {
+ message LoadCpu {
   required string cpu = 1;
   required uint32 value = 2;
 }
 
-message DevicePerformanceMessage {
+message DeviceCpuPerformanceMessage {
   required string serial = 1;
   required double date = 2;
-  repeated Load load = 3;
+  repeated LoadCpu load = 3;
   }
 
 message PerformanceStartMessage {

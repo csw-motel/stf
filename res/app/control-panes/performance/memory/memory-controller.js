@@ -1,40 +1,58 @@
 module.exports = function MemoryCtrl($scope, PerformanceService) {
 
-  var d3 = require('d3')
 
   var commons = require('./../commons.js')
+
   var width = 400 - commons.margin.left - commons.margin.right
   var height = 250 - commons.margin.top - commons.margin.bottom
+  var x = commons.d3.time.scale()
+  var y = commons.d3.scale.linear()
 
-  commons.x.range([0, width])
+  var xAxis = commons.d3.svg.axis()
+    .scale(x)
+    .orient('bottom')
 
-  // function for the x grid lines
+  var yAxis = commons.d3.svg.axis()
+    .scale(y)
+    .orient('left')
+
+  var line = commons.d3.svg.line()
+    .x(function(d) {
+      return x(d.date)
+    })
+    .y(function(d) {
+      return y(d.value)
+    })
+    .interpolate('basis')
+  x.range([0, width])
+    // function for the x grid lines
   function make_x_axis() {
-    return d3.svg.axis()
-      .scale(commons.x)
+    return commons.d3.svg.axis()
+      .scale(x)
       .orient('bottom')
       .ticks(5)
   }
 
   // function for the y grid lines
   function make_y_axis() {
-    return d3.svg.axis()
-      .scale(commons.y)
+    return commons.d3.svg.axis()
+      .scale(y)
       .orient('left')
       .ticks(5)
   }
-  var area = d3.svg.area()
+
+  var area = commons.d3.svg.area()
     .x(function(d) {
-      return commons.x(d.date)
+      return x(d.date)
     })
     .y0(height)
     .y1(function(d) {
-      return commons.y(d.value)
+      return y(d.value)
     })
 
-  var memoryChart = d3.select('#memory svg')
+  var memoryChart = commons.d3.select('#memory svg')
 
-  memoryChart = d3.select('#memory').append('svg')
+  memoryChart = commons.d3.select('#memory').append('svg')
     .attr('width', width + commons.margin.left + commons.margin.right)
     .attr('height', height + commons.margin.top + commons.margin.bottom)
     .append('g')
@@ -50,11 +68,11 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
       .tickFormat('')
     )
 
-  commons.y.range([height, 0]).domain([0, PerformanceService.getMemTotal])
+  y.range([height, 0]).domain([0, PerformanceService.getMemTotal])
 
   var y_axis = memoryChart.append('g')
     .attr('class', 'y axis')
-    .call(commons.yAxis)
+    .call(yAxis)
     .append('text')
     .attr('transform', 'rotate(-90)')
     .attr('y', 6)
@@ -68,24 +86,24 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
     .style('text-anchor', 'middle')
     .text('MB')
 
-  var color = d3.scale.ordinal().range(['#b0c4de'])
+  var color = commons.d3.scale.ordinal().range(['#b0c4de'])
 
 
 
   var x_axis = memoryChart.append('g')
     .attr('class', 'x axis')
     .attr('transform', 'translate(0,' + height + ')')
-    .call(commons.xAxis)
+    .call(xAxis)
 
-
-  var draw = function() {
-    var memoryData = PerformanceService.getMemoryData
-    commons.x.domain(d3.extent(memoryData, function(d) {
+  var memory, memoryData
+  var drawMemory = function() {
+    memoryData = PerformanceService.getMemoryData
+    x.domain(commons.d3.extent(memoryData, function(d) {
       return new Date(d.date * 1000)
     }))
 
-    x_axis.call(commons.xAxis)
-    color.domain(d3.keys(memoryData[0]).filter(function(key) {
+    x_axis.call(xAxis)
+    color.domain(commons.d3.keys(memoryData[0]).filter(function(key) {
       return key !== 'date'
     }))
 
@@ -95,7 +113,7 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
         values: memoryData.map(function(d) {
           return {
             date: new Date(d.date * 1000),
-            value: +d[name]
+            value: Number(d[name])
           }
         })
       }
@@ -127,16 +145,11 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
         return d.name
       })
 
-    var memory = memoryChart.selectAll('.memory')
+    memory = memoryChart.selectAll('.memory')
       .data(memorys)
       .enter().append('g')
       .attr('class', 'memory')
-      .call(d3.behavior.zoom().scaleExtent([0.15, 12]).on("zoom", function() {
-        x_axis.call(xAxis);
-        memory.attr("transform", "translate(" + d3.event.translate +
-          ")" +
-          " scale(" + d3.event.scale + ")")
-      }))
+
 
     var path = memory.append('path')
       .attr('class', 'area')
@@ -147,8 +160,45 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
         return color(d.name)
       })
   }
-  draw()
-    //setInterval(update, commons.interval)
+  var updateMemory = function() {
+    x.domain(commons.d3.extent(memoryData, function(d) {
+      return new Date(d.date * 1000)
+    }))
+
+    x_axis.call(xAxis)
+    color.domain(commons.d3.keys(memoryData[0]).filter(function(key) {
+      return key !== 'date'
+    }))
+
+    var memorys = color.domain().map(function(name) {
+      return {
+        name: name,
+        values: memoryData.map(function(d) {
+          return {
+            date: new Date(d.date * 1000),
+            value: Number(d[name])
+          }
+        })
+      }
+    })
+    memory.selectAll('path').remove()
+    memory.data(memorys)
+      .enter().append('g')
+      .attr('class', 'memory')
+
+
+    var path = memory.append('path')
+      .attr('class', 'area')
+      .attr('d', function(d) {
+        return area(d.values)
+      })
+      .style('stroke', function(d) {
+        return color(d.name)
+      })
+  }
+
+  drawMemory()
+  setInterval(updateMemory, commons.interval)
 
 
 }

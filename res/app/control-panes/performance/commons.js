@@ -7,11 +7,8 @@ var margin = {
   left: 50
 }
 
-var x = d3.time.scale()
-
-
+/*var x = d3.time.scale()
 var y = d3.scale.linear()
-
 
 var xAxis = d3.svg.axis()
   .scale(x)
@@ -29,12 +26,13 @@ var line = d3.svg.line()
     return y(d.value)
   })
   .interpolate('basis')
-
+*/
 module.exports = {
-  margin: margin,
-  x: x,
-  y: y,
-  xAxis: xAxis,
-  yAxis: yAxis,
-  line: line
+  d3: d3,
+  margin: margin
+    /*x: x,
+    y: y,
+    xAxis: xAxis,
+    yAxis: yAxis,
+    line: line*/
 }
