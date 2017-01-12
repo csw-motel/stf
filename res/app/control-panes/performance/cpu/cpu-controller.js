@@ -179,7 +179,7 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
       lastwidth = commons.d3.select('#cpu').style('width')
     }
 
-    setTimeout(checkForChanges, 100);
+    setTimeout(checkForChanges, 100)
   }
 
 
