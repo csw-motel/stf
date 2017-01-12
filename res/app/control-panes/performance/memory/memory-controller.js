@@ -68,7 +68,7 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
 
   var y_axis = memoryChart.append('g')
     .attr('class', 'y axis')
-    .call(yAxis.ticks(6))
+    .call(yAxis)
     .append('text')
     .attr('transform', 'rotate(-90)')
     .attr('y', 6)
