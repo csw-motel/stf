@@ -5,6 +5,8 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
   var width = 400 - commons.margin.left - commons.margin.right
   var height = 250 - commons.margin.top - commons.margin.bottom
 
+  var lastwidth = commons.d3.select('#cpu').style('width')
+
   var x = commons.d3.time.scale()
   var y = commons.d3.scale.linear()
 
@@ -27,10 +29,11 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
 
   x.range([0, width])
 
-  var cpuChart = commons.d3.select('#cpu svg')
+  var aa = document.getElementById('cpu')
   var cpu, performanceData
 
-  cpuChart = commons.d3.select('#cpu').append('svg')
+  var cpuChart = commons.d3.select(aa).append('svg')
+    .attr('id', 'cpuChart')
     .attr('width', width + commons.margin.left + commons.margin.right)
     .attr('height', height + commons.margin.top + commons.margin.bottom)
     .append('g')
@@ -66,7 +69,9 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
     .text('%')
 
   var draw = function() {
+
     performanceData = PerformanceService.getCpuData
+    x.range([0, width])
     x.domain(commons.d3.extent(performanceData, function(d) {
       return new Date(d.date * 1000)
     }))
@@ -128,6 +133,7 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
       .style('stroke', function(d) {
         return color(d.name)
       })
+      //checkForChanges()
   }
 
   var update = function() {
@@ -166,7 +172,29 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
 
   }
 
+  function checkForChanges() {
+
+    if (commons.d3.select('#cpu').style('width') != lastwidth) {
+      resize()
+      lastwidth = commons.d3.select('#cpu').style('width')
+    }
+
+    setTimeout(checkForChanges, 100);
+  }
+
+
+  function resize() {
+    // update width
+    width = parseInt(commons.d3.select('#cpu').style('width'), 10)
+    width = width - commons.margin.left - commons.margin.right
+
+    // reset x range
+    x.range([0, width])
+
+    // update chart
+    update()
+  }
+  checkForChanges()
   draw()
   setInterval(update, 1000)
-
 }

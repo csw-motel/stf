@@ -5,6 +5,8 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
 
   var width = 400 - commons.margin.left - commons.margin.right
   var height = 250 - commons.margin.top - commons.margin.bottom
+
+  var lastwidth = commons.d3.select('#memory').style('width')
   var x = commons.d3.time.scale()
   var y = commons.d3.scale.linear()
 
@@ -25,21 +27,15 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
     })
     .interpolate('basis')
   x.range([0, width])
-    // function for the x grid lines
-  function make_x_axis() {
-    return commons.d3.svg.axis()
-      .scale(x)
-      .orient('bottom')
-      .ticks(5)
-  }
+
 
   // function for the y grid lines
-  function make_y_axis() {
-    return commons.d3.svg.axis()
-      .scale(y)
-      .orient('left')
-      .ticks(5)
-  }
+  /*  function make_y_axis() {
+      return commons.d3.svg.axis()
+        .scale(y)
+        .orient('left')
+        .ticks(6)
+    }*/
 
   var area = commons.d3.svg.area()
     .x(function(d) {
@@ -61,18 +57,18 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
       ')')
 
   // Draw the y Grid lines
-  memoryChart.append('g')
-    .attr('class', 'grid')
-    .call(make_y_axis()
-      .tickSize(-width, 0, 0)
-      .tickFormat('')
-    )
+  /*  memoryChart.append('g')
+      .attr('class', 'grid')
+      .call(make_y_axis()
+        .tickSize(-width, 0, 0)
+        .tickFormat('')
+      )*/
 
   y.range([height, 0]).domain([0, PerformanceService.getMemTotal])
 
   var y_axis = memoryChart.append('g')
     .attr('class', 'y axis')
-    .call(yAxis)
+    .call(yAxis.ticks(6))
     .append('text')
     .attr('transform', 'rotate(-90)')
     .attr('y', 6)
@@ -97,6 +93,7 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
 
   var memory, memoryData
   var drawMemory = function() {
+
     memoryData = PerformanceService.getMemoryData
     x.domain(commons.d3.extent(memoryData, function(d) {
       return new Date(d.date * 1000)
@@ -160,7 +157,7 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
         return color(d.name)
       })
   }
-  var updateMemory = function() {
+  var update = function() {
     x.domain(commons.d3.extent(memoryData, function(d) {
       return new Date(d.date * 1000)
     }))
@@ -197,8 +194,31 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
       })
   }
 
+  function checkForChanges() {
+
+    if (commons.d3.select('#memory').style('width') != lastwidth) {
+      resize()
+      lastwidth = commons.d3.select('#memory').style('width')
+    }
+
+    setTimeout(checkForChanges, 100);
+  }
+
+
+  function resize() {
+    // update width
+    width = parseInt(commons.d3.select('#memory').style('width'), 10)
+    width = width - commons.margin.left - commons.margin.right
+
+    // reset x range
+    x.range([0, width])
+
+    // update chart
+    update()
+  }
+  checkForChanges()
   drawMemory()
-  setInterval(updateMemory, commons.interval)
+  setInterval(update, commons.interval)
 
 
 }
