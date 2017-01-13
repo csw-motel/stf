@@ -71,7 +71,7 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
   var draw = function() {
 
     performanceData = PerformanceService.getCpuData
-    x.range([0, width])
+      //  x.range([0, width])
     x.domain(commons.d3.extent(performanceData, function(d) {
       return new Date(d.date * 1000)
     }))
@@ -173,13 +173,15 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
   }
 
   function checkForChanges() {
+    if (document.getElementById('cpu')) {
+      if (commons.d3.select('#cpu').style('width') != lastwidth) {
+        resize()
+        lastwidth = commons.d3.select('#cpu').style('width')
+      }
 
-    if (commons.d3.select('#cpu').style('width') != lastwidth) {
-      resize()
-      lastwidth = commons.d3.select('#cpu').style('width')
+
+      setTimeout(checkForChanges, 100)
     }
-
-    setTimeout(checkForChanges, 100)
   }
 
 
@@ -194,7 +196,11 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
     // update chart
     update()
   }
-  checkForChanges()
-  draw()
-  setInterval(update, 1000)
+  if (document.getElementById('cpu')) {
+    checkForChanges()
+
+    draw()
+
+    setInterval(update, 1000)
+  }
 }

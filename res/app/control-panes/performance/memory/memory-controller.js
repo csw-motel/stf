@@ -158,50 +158,53 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
       })
   }
   var update = function() {
-    x.domain(commons.d3.extent(memoryData, function(d) {
-      return new Date(d.date * 1000)
-    }))
+    if (document.getElementById('memory')) {
+      x.domain(commons.d3.extent(memoryData, function(d) {
+        return new Date(d.date * 1000)
+      }))
 
-    x_axis.call(xAxis)
-    color.domain(commons.d3.keys(memoryData[0]).filter(function(key) {
-      return key !== 'date'
-    }))
+      x_axis.call(xAxis)
+      color.domain(commons.d3.keys(memoryData[0]).filter(function(key) {
+        return key !== 'date'
+      }))
 
-    var memorys = color.domain().map(function(name) {
-      return {
-        name: name,
-        values: memoryData.map(function(d) {
-          return {
-            date: new Date(d.date * 1000),
-            value: Number(d[name])
-          }
+      var memorys = color.domain().map(function(name) {
+        return {
+          name: name,
+          values: memoryData.map(function(d) {
+            return {
+              date: new Date(d.date * 1000),
+              value: Number(d[name])
+            }
+          })
+        }
+      })
+      memory.selectAll('path').remove()
+      memory.data(memorys)
+        .enter().append('g')
+        .attr('class', 'memory')
+
+
+      var path = memory.append('path')
+        .attr('class', 'area')
+        .attr('d', function(d) {
+          return area(d.values)
         })
-      }
-    })
-    memory.selectAll('path').remove()
-    memory.data(memorys)
-      .enter().append('g')
-      .attr('class', 'memory')
-
-
-    var path = memory.append('path')
-      .attr('class', 'area')
-      .attr('d', function(d) {
-        return area(d.values)
-      })
-      .style('stroke', function(d) {
-        return color(d.name)
-      })
+        .style('stroke', function(d) {
+          return color(d.name)
+        })
+    }
   }
 
   function checkForChanges() {
+    if (document.getElementById('memory')) {
+      if (commons.d3.select('#memory').style('width') != lastwidth) {
+        resize()
+        lastwidth = commons.d3.select('#memory').style('width')
+      }
 
-    if (commons.d3.select('#memory').style('width') != lastwidth) {
-      resize()
-      lastwidth = commons.d3.select('#memory').style('width')
+      setTimeout(checkForChanges, 100)
     }
-
-    setTimeout(checkForChanges, 100);
   }
 
 
@@ -216,9 +219,11 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
     // update chart
     update()
   }
-  checkForChanges()
-  drawMemory()
-  setInterval(update, commons.interval)
+  if (document.getElementById('memory')) {
+    checkForChanges()
+    drawMemory()
+    setInterval(update, commons.interval)
+  }
 
 
 }
