@@ -137,39 +137,39 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
   }
 
   var update = function() {
+    if (document.getElementById('cpu')) {
+      x.domain(commons.d3.extent(performanceData, function(d) {
+        return new Date(d.date * 1000)
+      }))
 
-    x.domain(commons.d3.extent(performanceData, function(d) {
-      return new Date(d.date * 1000)
-    }))
+      x_axis.call(xAxis)
 
-    x_axis.call(xAxis)
+      var cpuMap = color.domain().map(function(name) {
+        return {
+          name: name,
+          values: performanceData.map(function(d) {
+            return {
+              date: new Date(d.date * 1000),
+              value: Number(d[name])
+            }
+          })
+        }
+      })
 
-    var cpuMap = color.domain().map(function(name) {
-      return {
-        name: name,
-        values: performanceData.map(function(d) {
-          return {
-            date: new Date(d.date * 1000),
-            value: Number(d[name])
-          }
+      cpu.selectAll('path').remove()
+      cpu.data(cpuMap)
+        .enter().append('g')
+        .attr('class', 'cpu')
+
+      cpu.append('path')
+        .attr('class', 'line')
+        .attr('d', function(d) {
+          return line(d.values)
         })
-      }
-    })
-
-    cpu.selectAll('path').remove()
-    cpu.data(cpuMap)
-      .enter().append('g')
-      .attr('class', 'cpu')
-
-    cpu.append('path')
-      .attr('class', 'line')
-      .attr('d', function(d) {
-        return line(d.values)
-      })
-      .style('stroke', function(d) {
-        return color(d.name)
-      })
-
+        .style('stroke', function(d) {
+          return color(d.name)
+        })
+    }
   }
 
   function checkForChanges() {
