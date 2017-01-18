@@ -1,12 +1,11 @@
 module.exports = function MemoryCtrl($scope, PerformanceService) {
 
-
   var commons = require('./../commons.js')
+  var jQuery = require('jquery')
 
   var width = 400 - commons.margin.left - commons.margin.right
   var height = 250 - commons.margin.top - commons.margin.bottom
 
-  var lastwidth = commons.d3.select('#memory').style('width')
   var x = commons.d3.time.scale()
   var y = commons.d3.scale.linear()
 
@@ -196,18 +195,6 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
     }
   }
 
-  function checkForChanges() {
-    if (document.getElementById('memory')) {
-      if (commons.d3.select('#memory').style('width') != lastwidth) {
-        resize()
-        lastwidth = commons.d3.select('#memory').style('width')
-      }
-
-      setTimeout(checkForChanges, 100)
-    }
-  }
-
-
   function resize() {
     // update width
     width = parseInt(commons.d3.select('#memory').style('width'), 10)
@@ -219,11 +206,16 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
     // update chart
     update()
   }
-  if (document.getElementById('memory')) {
-    checkForChanges()
-    drawMemory()
-    setInterval(update, commons.interval)
-  }
 
+  drawMemory()
+  setInterval(update, commons.interval)
 
+  //resize
+  jQuery(window).resize(resize)
+  jQuery('.fa-pane-handle').mouseup(resize)
+
+  $scope.$on('$destroy', function() {
+    jQuery(window).off('resize', resize)
+    jQuery('.fa-pane-handle').off('mouseup', resize)
+  })
 }

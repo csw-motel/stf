@@ -1,11 +1,10 @@
 module.exports = function CpuCtrl($scope, PerformanceService) {
 
   var commons = require('./../commons.js')
+  var jQuery = require('jquery')
 
   var width = 400 - commons.margin.left - commons.margin.right
   var height = 250 - commons.margin.top - commons.margin.bottom
-
-  var lastwidth = commons.d3.select('#cpu').style('width')
 
   var x = commons.d3.time.scale()
   var y = commons.d3.scale.linear()
@@ -71,7 +70,7 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
   var draw = function() {
 
     performanceData = PerformanceService.getCpuData
-      //  x.range([0, width])
+      //x.range([0, width])
     x.domain(commons.d3.extent(performanceData, function(d) {
       return new Date(d.date * 1000)
     }))
@@ -133,11 +132,10 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
       .style('stroke', function(d) {
         return color(d.name)
       })
-      //checkForChanges()
+
   }
 
   var update = function() {
-
     x.domain(commons.d3.extent(performanceData, function(d) {
       return new Date(d.date * 1000)
     }))
@@ -169,21 +167,7 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
       .style('stroke', function(d) {
         return color(d.name)
       })
-
   }
-
-  function checkForChanges() {
-    if (document.getElementById('cpu')) {
-      if (commons.d3.select('#cpu').style('width') != lastwidth) {
-        resize()
-        lastwidth = commons.d3.select('#cpu').style('width')
-      }
-
-
-      setTimeout(checkForChanges, 100)
-    }
-  }
-
 
   function resize() {
     // update width
@@ -196,11 +180,19 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
     // update chart
     update()
   }
-  if (document.getElementById('cpu')) {
-    checkForChanges()
 
-    draw()
+  draw()
+    //resize()
+  setInterval(update, commons.interval)
 
-    setInterval(update, 1000)
-  }
+  //resize
+  jQuery(window).resize(resize)
+  jQuery('.fa-pane-handle').mouseup(resize)
+
+  $scope.$on('$destroy', function() {
+    jQuery(window).off('resize', resize)
+    jQuery('.fa-pane-handle').off('mouseup', resize)
+  })
+
+
 }
