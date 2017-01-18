@@ -70,7 +70,9 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
   var draw = function() {
 
     performanceData = PerformanceService.getCpuData
-      //x.range([0, width])
+
+    x.range([0, width])
+
     x.domain(commons.d3.extent(performanceData, function(d) {
       return new Date(d.date * 1000)
     }))
@@ -169,6 +171,8 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
       })
   }
 
+
+
   function resize() {
     // update width
     width = parseInt(commons.d3.select('#cpu').style('width'), 10)
@@ -182,7 +186,7 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
   }
 
   draw()
-    //resize()
+
   setInterval(update, commons.interval)
 
   //resize
