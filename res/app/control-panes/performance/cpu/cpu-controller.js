@@ -1,11 +1,10 @@
 module.exports = function CpuCtrl($scope, PerformanceService) {
 
   var commons = require('./../commons.js')
+  var jQuery = require('jquery')
 
   var width = 400 - commons.margin.left - commons.margin.right
   var height = 250 - commons.margin.top - commons.margin.bottom
-
-  var lastwidth = commons.d3.select('#cpu').style('width')
 
   var x = commons.d3.time.scale()
   var y = commons.d3.scale.linear()
@@ -71,7 +70,9 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
   var draw = function() {
 
     performanceData = PerformanceService.getCpuData
-      //  x.range([0, width])
+
+    x.range([0, width])
+
     x.domain(commons.d3.extent(performanceData, function(d) {
       return new Date(d.date * 1000)
     }))
@@ -133,56 +134,44 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
       .style('stroke', function(d) {
         return color(d.name)
       })
-      //checkForChanges()
+
   }
 
   var update = function() {
-    if (document.getElementById('cpu')) {
-      x.domain(commons.d3.extent(performanceData, function(d) {
-        return new Date(d.date * 1000)
-      }))
 
-      x_axis.call(xAxis)
+    x.domain(commons.d3.extent(performanceData, function(d) {
+      return new Date(d.date * 1000)
+    }))
 
-      var cpuMap = color.domain().map(function(name) {
-        return {
-          name: name,
-          values: performanceData.map(function(d) {
-            return {
-              date: new Date(d.date * 1000),
-              value: Number(d[name])
-            }
-          })
-        }
-      })
+    x_axis.call(xAxis)
 
-      cpu.selectAll('path').remove()
-      cpu.data(cpuMap)
-        .enter().append('g')
-        .attr('class', 'cpu')
-
-      cpu.append('path')
-        .attr('class', 'line')
-        .attr('d', function(d) {
-          return line(d.values)
+    var cpuMap = color.domain().map(function(name) {
+      return {
+        name: name,
+        values: performanceData.map(function(d) {
+          return {
+            date: new Date(d.date * 1000),
+            value: Number(d[name])
+          }
         })
-        .style('stroke', function(d) {
-          return color(d.name)
-        })
-    }
-  }
-
-  function checkForChanges() {
-    if (document.getElementById('cpu')) {
-      if (commons.d3.select('#cpu').style('width') != lastwidth) {
-        resize()
-        lastwidth = commons.d3.select('#cpu').style('width')
       }
+    })
 
+    cpu.selectAll('path').remove()
+    cpu.data(cpuMap)
+      .enter().append('g')
+      .attr('class', 'cpu')
 
-      setTimeout(checkForChanges, 100)
-    }
+    cpu.append('path')
+      .attr('class', 'line')
+      .attr('d', function(d) {
+        return line(d.values)
+      })
+      .style('stroke', function(d) {
+        return color(d.name)
+      })
   }
+
 
 
   function resize() {
@@ -196,11 +185,19 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
     // update chart
     update()
   }
-  if (document.getElementById('cpu')) {
-    checkForChanges()
 
-    draw()
+  draw()
 
-    setInterval(update, 1000)
-  }
+  setInterval(update, commons.interval)
+
+  //resize
+  jQuery(window).resize(resize)
+  jQuery('.fa-pane-handle').mouseup(resize)
+
+  $scope.$on('$destroy', function() {
+    jQuery(window).off('resize', resize)
+    jQuery('.fa-pane-handle').off('mouseup', resize)
+  })
+
+
 }

@@ -1,12 +1,11 @@
 module.exports = function MemoryCtrl($scope, PerformanceService) {
 
-
   var commons = require('./../commons.js')
+  var jQuery = require('jquery')
 
   var width = 400 - commons.margin.left - commons.margin.right
   var height = 250 - commons.margin.top - commons.margin.bottom
 
-  var lastwidth = commons.d3.select('#memory').style('width')
   var x = commons.d3.time.scale()
   var y = commons.d3.scale.linear()
 
@@ -68,7 +67,7 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
 
   var y_axis = memoryChart.append('g')
     .attr('class', 'y axis')
-    .call(yAxis)
+    .call(yAxis.ticks(6))
     .append('text')
     .attr('transform', 'rotate(-90)')
     .attr('y', 6)
@@ -158,54 +157,40 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
       })
   }
   var update = function() {
-    if (document.getElementById('memory')) {
-      x.domain(commons.d3.extent(memoryData, function(d) {
-        return new Date(d.date * 1000)
-      }))
 
-      x_axis.call(xAxis)
-      color.domain(commons.d3.keys(memoryData[0]).filter(function(key) {
-        return key !== 'date'
-      }))
+    x.domain(commons.d3.extent(memoryData, function(d) {
+      return new Date(d.date * 1000)
+    }))
 
-      var memorys = color.domain().map(function(name) {
-        return {
-          name: name,
-          values: memoryData.map(function(d) {
-            return {
-              date: new Date(d.date * 1000),
-              value: Number(d[name])
-            }
-          })
-        }
-      })
-      memory.selectAll('path').remove()
-      memory.data(memorys)
-        .enter().append('g')
-        .attr('class', 'memory')
+    x_axis.call(xAxis)
 
 
-      var path = memory.append('path')
-        .attr('class', 'area')
-        .attr('d', function(d) {
-          return area(d.values)
+    var memorys = color.domain().map(function(name) {
+      return {
+        name: name,
+        values: memoryData.map(function(d) {
+          return {
+            date: new Date(d.date * 1000),
+            value: Number(d[name])
+          }
         })
-        .style('stroke', function(d) {
-          return color(d.name)
-        })
-    }
-  }
-
-  function checkForChanges() {
-    if (document.getElementById('memory')) {
-      if (commons.d3.select('#memory').style('width') != lastwidth) {
-        resize()
-        lastwidth = commons.d3.select('#memory').style('width')
       }
+    })
+    memory.selectAll('path').remove()
+    memory.data(memorys)
+      .enter().append('g')
+      .attr('class', 'memory')
 
-      setTimeout(checkForChanges, 100)
-    }
+    var path = memory.append('path')
+      .attr('class', 'area')
+      .attr('d', function(d) {
+        return area(d.values)
+      })
+      .style('stroke', function(d) {
+        return color(d.name)
+      })
   }
+
 
 
   function resize() {
@@ -219,11 +204,15 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
     // update chart
     update()
   }
-  if (document.getElementById('memory')) {
-    checkForChanges()
-    drawMemory()
-    setInterval(update, commons.interval)
-  }
+  drawMemory()
+  setInterval(update, commons.interval)
 
+  //resize
+  jQuery(window).resize(resize)
+  jQuery('.fa-pane-handle').mouseup(resize)
 
+  $scope.$on('$destroy', function() {
+    jQuery(window).off('resize', resize)
+    jQuery('.fa-pane-handle').off('mouseup', resize)
+  })
 }
