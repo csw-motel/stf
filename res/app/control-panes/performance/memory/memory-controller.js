@@ -157,12 +157,16 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
       })
   }
   var update = function() {
-
+    width = parseInt(commons.d3.select('#cpu').style('width'), 10)
+    width = width - commons.margin.left - commons.margin.right
     x.domain(commons.d3.extent(memoryData, function(d) {
       return new Date(d.date * 1000)
     }))
+    x.range([0, width])
 
+    xAxis.scale(x)
     x_axis.call(xAxis)
+
 
 
     var memorys = color.domain().map(function(name) {
@@ -192,7 +196,6 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
   }
 
 
-
   function resize() {
     // update width
     width = parseInt(commons.d3.select('#memory').style('width'), 10)
@@ -205,7 +208,7 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
     update()
   }
   drawMemory()
-  setInterval(update, commons.interval)
+  var memInterval = setInterval(update, commons.interval)
 
   //resize
   jQuery(window).resize(resize)
@@ -214,5 +217,6 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
   $scope.$on('$destroy', function() {
     jQuery(window).off('resize', resize)
     jQuery('.fa-pane-handle').off('mouseup', resize)
+    clearInterval(memInterval)
   })
 }
