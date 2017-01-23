@@ -28,10 +28,9 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
 
   x.range([0, width])
 
-  var aa = document.getElementById('cpu')
   var cpu, performanceData
 
-  var cpuChart = commons.d3.select(aa).append('svg')
+  var cpuChart = commons.d3.select('#cpu').append('svg')
     .attr('id', 'cpuChart')
     .attr('width', width + commons.margin.left + commons.margin.right)
     .attr('height', height + commons.margin.top + commons.margin.bottom)
@@ -70,13 +69,12 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
   var draw = function() {
 
     performanceData = PerformanceService.getCpuData
-
     x.range([0, width])
 
     x.domain(commons.d3.extent(performanceData, function(d) {
       return new Date(d.date * 1000)
     }))
-
+    xAxis.scale(x)
     x_axis.call(xAxis)
 
     color.domain(commons.d3.keys(performanceData[0]).filter(function(key) {
@@ -139,10 +137,15 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
 
   var update = function() {
 
+    width = parseInt(commons.d3.select('#cpu').style('width'), 10)
+    width = width - commons.margin.left - commons.margin.right
+
     x.domain(commons.d3.extent(performanceData, function(d) {
       return new Date(d.date * 1000)
     }))
+    x.range([0, width])
 
+    xAxis.scale(x)
     x_axis.call(xAxis)
 
     var cpuMap = color.domain().map(function(name) {
@@ -172,8 +175,6 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
       })
   }
 
-
-
   function resize() {
     // update width
     width = parseInt(commons.d3.select('#cpu').style('width'), 10)
@@ -187,8 +188,7 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
   }
 
   draw()
-
-  setInterval(update, commons.interval)
+  var interval = setInterval(update, commons.interval)
 
   //resize
   jQuery(window).resize(resize)
@@ -197,6 +197,7 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
   $scope.$on('$destroy', function() {
     jQuery(window).off('resize', resize)
     jQuery('.fa-pane-handle').off('mouseup', resize)
+    clearInterval(interval)
   })
 
 

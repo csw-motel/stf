@@ -14,25 +14,3 @@
     stroke: black;
     stroke-width: 1px;
 }
-
-.widget-name h2 {
-    font-size: 20px;
-    color:blue;
-}
-
-.widget-name[min-width~="200px"] h2 {
-    font-size: 18px;
-    color:green;
-}
-
-.widget-name[min-width~="400px"] h2 {
-    padding: 55px;
-    text-align: center;
-    font-size: 24px;
-    color:yellow;
-}
-
-.widget-name[min-width~="500px"] h2 {
-    font-size: 34px;
-    color: red;
-}
