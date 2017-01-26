@@ -1,5 +1,6 @@
 module.exports = function MemoryCtrl($scope, PerformanceService) {
 
+<<<<<<< HEAD
   var d3 = require('d3')
 
   var update = function() {
@@ -36,6 +37,35 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
         .orient("bottom")
         .ticks(5)
     }
+=======
+  var commons = require('./../commons.js')
+  var jQuery = require('jquery')
+
+  var width = 400 - commons.margin.left - commons.margin.right
+  var height = 250 - commons.margin.top - commons.margin.bottom
+
+  var x = commons.d3.time.scale()
+  var y = commons.d3.scale.linear()
+
+  var xAxis = commons.d3.svg.axis()
+    .scale(x)
+    .orient('bottom')
+
+  var yAxis = commons.d3.svg.axis()
+    .scale(y)
+    .orient('left')
+
+  var line = commons.d3.svg.line()
+    .x(function(d) {
+      return x(d.date)
+    })
+    .y(function(d) {
+      return y(d.value)
+    })
+    .interpolate('basis')
+  x.range([0, width])
+
+>>>>>>> motel-0.2
 
     // function for the y grid lines
     function make_y_axis() {
@@ -90,9 +120,27 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
         .tickFormat("")
       )
 
+<<<<<<< HEAD
     x.domain(d3.extent(memoryData, function(d) {
       return new Date(d.date * 1000);
     }));
+=======
+  var y_axis = memoryChart.append('g')
+    .attr('class', 'y axis')
+    .call(yAxis.ticks(6))
+    .append('text')
+    .attr('transform', 'rotate(-90)')
+    .attr('y', 6)
+    .attr('dy', '.71em')
+    //Create Y axis label
+  memoryChart.append('text')
+    .attr('transform', 'rotate(-90)')
+    .attr('y', 0 - commons.margin.left)
+    .attr('x', 0 - (height / 2))
+    .attr('dy', '1em')
+    .style('text-anchor', 'middle')
+    .text('MB')
+>>>>>>> motel-0.2
 
 
     y.domain([0, PerformanceService.getMemTotal])
@@ -176,7 +224,74 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
       .style("stroke", function(d) {
         return color(d.name)
       })
+<<<<<<< HEAD
 
   }
   setInterval(update, 1000)
+=======
+  }
+  var update = function() {
+    width = parseInt(commons.d3.select('#cpu').style('width'), 10)
+    width = width - commons.margin.left - commons.margin.right
+    x.domain(commons.d3.extent(memoryData, function(d) {
+      return new Date(d.date * 1000)
+    }))
+    x.range([0, width])
+
+    xAxis.scale(x)
+    x_axis.call(xAxis)
+
+
+
+    var memorys = color.domain().map(function(name) {
+      return {
+        name: name,
+        values: memoryData.map(function(d) {
+          return {
+            date: new Date(d.date * 1000),
+            value: Number(d[name])
+          }
+        })
+      }
+    })
+    memory.selectAll('path').remove()
+    memory.data(memorys)
+      .enter().append('g')
+      .attr('class', 'memory')
+
+    var path = memory.append('path')
+      .attr('class', 'area')
+      .attr('d', function(d) {
+        return area(d.values)
+      })
+      .style('stroke', function(d) {
+        return color(d.name)
+      })
+  }
+
+
+  function resize() {
+    // update width
+    width = parseInt(commons.d3.select('#memory').style('width'), 10)
+    width = width - commons.margin.left - commons.margin.right
+
+    // reset x range
+    x.range([0, width])
+
+    // update chart
+    update()
+  }
+  drawMemory()
+  var memInterval = setInterval(update, commons.interval)
+
+  //resize
+  jQuery(window).resize(resize)
+  jQuery('.fa-pane-handle').mouseup(resize)
+
+  $scope.$on('$destroy', function() {
+    jQuery(window).off('resize', resize)
+    jQuery('.fa-pane-handle').off('mouseup', resize)
+    clearInterval(memInterval)
+  })
+>>>>>>> motel-0.2
 }
