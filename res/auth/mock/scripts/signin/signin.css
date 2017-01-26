@@ -1,21 +1,27 @@
 body {
-    background: #eeeeee;
+    background: #55A5BC;
 }
 
 .login2 {
     padding: 15px;
-    background: #eeeeee;
+    background: #55A5BC;
 }
 
 .login2 .login-wrapper {
     max-width: 420px;
-    margin: 0 auto;
+    margin: 5% auto;
     text-align: center;
 }
 
 .login2 .login-wrapper img {
     margin: 40px auto;
 }
+
+.login2 .login-wrapper p {
+    color: white;
+    font-size: 25px;
+    padding-bottom: 40px;
+}   
 
 .login2 .login-wrapper .input-group-addon {
     padding: 8px 0;

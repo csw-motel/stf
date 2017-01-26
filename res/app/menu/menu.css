@@ -1,10 +1,10 @@
 .stf-menu .stf-logo {
-  background: url(../../common/logo/exports/STF-512.png) no-repeat 0 0;
-  width: 32px;
-  height: 32px;
+  background: url(../../common/logo/exports/motel-menu.png) no-repeat 0 0;
+  width: 35px;
+  height: 35px;
   float: left;
   text-indent: -9999em;
-  margin: 6px 10px 0 0;
+  margin: 5px 10px 0 0;
   background-size: 100% auto;
   -webkit-background-size: 100% auto;
 }
