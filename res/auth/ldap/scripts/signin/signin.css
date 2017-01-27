@@ -50,7 +50,9 @@ body {
 }
 
 .login2 .login-wrapper input[type="submit"]:hover {
-    background: transparent;
+    background: #287992;
+    border-color: #287992;
+    color: white;
 }
 
 .login2 .login-wrapper .social-login {
