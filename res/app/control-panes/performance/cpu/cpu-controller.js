@@ -1,4 +1,3 @@
-
 module.exports = function CpuCtrl($scope, PerformanceService) {
 
   var commons = require('./../commons.js')
@@ -137,9 +136,9 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
   }
 
   var update = function() {
+
     width = parseInt(commons.d3.select('#cpu').style('width'), 10)
     width = width - commons.margin.left - commons.margin.right
-
 
     x.domain(commons.d3.extent(performanceData, function(d) {
       return new Date(d.date * 1000)

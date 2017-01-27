@@ -3,8 +3,9 @@ module.exports = function PerformanceServiceFactory(socket,
   var cpuData = []
   var memoryData = []
   var memTotal = []
+  var newData = {}
 
-  socket.on('device.performance', function(message) {
+  socket.on('device.cpuPerformance', function(message) {
     var str = ""
     for (var key in Object.keys(message.load)) {
       str += ", " + '"cpu ' + key + '" : ' + message.load[key].value
@@ -12,6 +13,11 @@ module.exports = function PerformanceServiceFactory(socket,
     var jsonStr = '{ ' + '"date" : ' + '"' + message.date + '"' +
       str + ' }'
 
+    //console.log('AA__' + JSON.stringify(newData))
+    //console.log(newData)
+    newData = JSON.parse(jsonStr)
+      //  console.log(jsonStr)
+      //console.log('NEWDATA___' + newData)
     cpuData.push(JSON.parse(jsonStr))
   })
 
@@ -50,10 +56,13 @@ module.exports = function PerformanceServiceFactory(socket,
   }
 
   return {
-    getPerformanceData: cpuData,
+    getCpuData: cpuData,
     startPerformance: startPerformance,
     stopPerformance: stopPerformance,
     getMemoryData: memoryData,
-    getMemTotal: memTotal
+    getMemTotal: memTotal,
+    getNewData: function() {
+      return newData;
+    }
   }
 }
