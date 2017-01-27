@@ -1,4 +1,4 @@
-module.exports = function CpuCtrl($scope, PerformanceService) {
+module.exports = function MemoryCtrl($scope, PerformanceService) {
 
   var commons = require('./../commons.js')
   var jQuery = require('jquery')
@@ -25,66 +25,88 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
       return y(d.value)
     })
     .interpolate('basis')
-
   x.range([0, width])
 
-  var cpu, performanceData
 
-  var cpuChart = commons.d3.select('#cpu').append('svg')
-    .attr('id', 'cpuChart')
+  // function for the y grid lines
+  /*  function make_y_axis() {
+      return commons.d3.svg.axis()
+        .scale(y)
+        .orient('left')
+        .ticks(6)
+    }*/
+
+  var area = commons.d3.svg.area()
+    .x(function(d) {
+      return x(d.date)
+    })
+    .y0(height)
+    .y1(function(d) {
+      return y(d.value)
+    })
+
+  var memoryChart = commons.d3.select('#memory svg')
+
+  memoryChart = commons.d3.select('#memory').append('svg')
     .attr('width', width + commons.margin.left + commons.margin.right)
     .attr('height', height + commons.margin.top + commons.margin.bottom)
     .append('g')
-    .attr('transform', 'translate(' + commons.margin.left + ',' + commons.margin.top + ')')
+    .attr('transform', 'translate(' + commons.margin.left + ',' + commons.margin
+      .top +
+      ')')
 
-  y.range([height, 0]).domain([0, 100])
+  // Draw the y Grid lines
+  /*  memoryChart.append('g')
+      .attr('class', 'grid')
+      .call(make_y_axis()
+        .tickSize(-width, 0, 0)
+        .tickFormat('')
+      )*/
 
-  var x_axis = cpuChart.append('g')
-    .attr('class', 'x axis')
-    .attr('transform', 'translate(0,' + height + ')')
-    .call(xAxis)
+  y.range([height, 0]).domain([0, PerformanceService.getMemTotal])
 
-  cpuChart.append('g')
+  var y_axis = memoryChart.append('g')
     .attr('class', 'y axis')
-    .call(yAxis)
+    .call(yAxis.ticks(6))
     .append('text')
     .attr('transform', 'rotate(-90)')
     .attr('y', 6)
     .attr('dy', '.71em')
-
-  var color = commons.d3.scale.ordinal().range(['#33cc33', '#0099ff', '#ff9900', '#FF00FF',
-    '#0D7AFF',
-    '#6B238E', '#FF6600', '#33ff33'
-  ])
-
-  //Create Y axis label
-  cpuChart.append('text')
+    //Create Y axis label
+  memoryChart.append('text')
     .attr('transform', 'rotate(-90)')
     .attr('y', 0 - commons.margin.left)
     .attr('x', 0 - (height / 2))
     .attr('dy', '1em')
     .style('text-anchor', 'middle')
-    .text('%')
+    .text('MB')
 
-  var draw = function() {
+  var color = commons.d3.scale.ordinal().range(['#b0c4de'])
 
-    performanceData = PerformanceService.getCpuData
-    x.range([0, width])
 
-    x.domain(commons.d3.extent(performanceData, function(d) {
+
+  var x_axis = memoryChart.append('g')
+    .attr('class', 'x axis')
+    .attr('transform', 'translate(0,' + height + ')')
+    .call(xAxis)
+
+  var memory, memoryData
+  var drawMemory = function() {
+
+    memoryData = PerformanceService.getMemoryData
+    x.domain(commons.d3.extent(memoryData, function(d) {
       return new Date(d.date * 1000)
     }))
-    xAxis.scale(x)
-    x_axis.call(xAxis)
 
-    color.domain(commons.d3.keys(performanceData[0]).filter(function(key) {
+    x_axis.call(xAxis)
+    color.domain(commons.d3.keys(memoryData[0]).filter(function(key) {
       return key !== 'date'
     }))
 
-    var cpuMap = color.domain().map(function(name) {
+    var memorys = color.domain().map(function(name) {
       return {
         name: name,
-        values: performanceData.map(function(d) {
+        values: memoryData.map(function(d) {
           return {
             date: new Date(d.date * 1000),
             value: Number(d[name])
@@ -93,12 +115,12 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
       }
     })
 
-    var legend = cpuChart.selectAll('.g')
-      .data(cpuMap)
+
+    var legend = memoryChart.selectAll('.g')
+      .data(memorys)
       .enter()
       .append('g')
       .attr('class', 'legend')
-
     legend.append('rect')
       .attr('y', height + 30)
       .attr('x', function(d, i) {
@@ -119,28 +141,25 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
         return d.name
       })
 
-    cpu = cpuChart.selectAll('.cpu')
-      .data(cpuMap)
+    memory = memoryChart.selectAll('.memory')
+      .data(memorys)
       .enter().append('g')
-      .attr('class', 'cpu')
+      .attr('class', 'memory')
 
-    cpu.append('path')
-      .attr('class', 'line')
+
+    var path = memory.append('path')
+      .attr('class', 'area')
       .attr('d', function(d) {
-        return line(d.values)
+        return area(d.values)
       })
       .style('stroke', function(d) {
         return color(d.name)
       })
-
   }
-
   var update = function() {
     width = parseInt(commons.d3.select('#cpu').style('width'), 10)
     width = width - commons.margin.left - commons.margin.right
-
-
-    x.domain(commons.d3.extent(performanceData, function(d) {
+    x.domain(commons.d3.extent(memoryData, function(d) {
       return new Date(d.date * 1000)
     }))
     x.range([0, width])
@@ -148,10 +167,12 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
     xAxis.scale(x)
     x_axis.call(xAxis)
 
-    var cpuMap = color.domain().map(function(name) {
+
+
+    var memorys = color.domain().map(function(name) {
       return {
         name: name,
-        values: performanceData.map(function(d) {
+        values: memoryData.map(function(d) {
           return {
             date: new Date(d.date * 1000),
             value: Number(d[name])
@@ -159,25 +180,25 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
         })
       }
     })
-
-    cpu.selectAll('path').remove()
-    cpu.data(cpuMap)
+    memory.selectAll('path').remove()
+    memory.data(memorys)
       .enter().append('g')
-      .attr('class', 'cpu')
+      .attr('class', 'memory')
 
-    cpu.append('path')
-      .attr('class', 'line')
+    var path = memory.append('path')
+      .attr('class', 'area')
       .attr('d', function(d) {
-        return line(d.values)
+        return area(d.values)
       })
       .style('stroke', function(d) {
         return color(d.name)
       })
   }
 
+
   function resize() {
     // update width
-    width = parseInt(commons.d3.select('#cpu').style('width'), 10)
+    width = parseInt(commons.d3.select('#memory').style('width'), 10)
     width = width - commons.margin.left - commons.margin.right
 
     // reset x range
@@ -186,9 +207,8 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
     // update chart
     update()
   }
-
-  draw()
-  var interval = setInterval(update, commons.interval)
+  drawMemory()
+  var memInterval = setInterval(update, commons.interval)
 
   //resize
   jQuery(window).resize(resize)
@@ -197,8 +217,6 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
   $scope.$on('$destroy', function() {
     jQuery(window).off('resize', resize)
     jQuery('.fa-pane-handle').off('mouseup', resize)
-    clearInterval(interval)
+    clearInterval(memInterval)
   })
-
-
 }
