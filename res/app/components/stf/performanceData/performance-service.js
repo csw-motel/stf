@@ -13,11 +13,8 @@ module.exports = function PerformanceServiceFactory(socket,
     var jsonStr = '{ ' + '"date" : ' + '"' + message.date + '"' +
       str + ' }'
 
-    //console.log('AA__' + JSON.stringify(newData))
-    //console.log(newData)
     newData = JSON.parse(jsonStr)
-      //  console.log(jsonStr)
-      //console.log('NEWDATA___' + newData)
+
     cpuData.push(JSON.parse(jsonStr))
   })
 
