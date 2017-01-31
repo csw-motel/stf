@@ -1,58 +1,64 @@
-module.exports = function PerformanceServiceFactory(socket,
-  ControlService) {
-  var cpuData = []
-  var memoryData = []
-  var memTotal = []
-  var newData = {}
+module.exports = function PerformanceServiceFactory(socket, ControlService) {
+
+  var cpuData = {}
+  var memoryData = {}
+  var memTotal = {}
 
   socket.on('device.cpuPerformance', function(message) {
-    var str = ""
-    for (var key in Object.keys(message.load)) {
-      str += ", " + '"cpu ' + key + '" : ' + message.load[key].value
-    }
-    var jsonStr = '{ ' + '"date" : ' + '"' + message.date + '"' +
-      str + ' }'
 
-    //console.log('AA__' + JSON.stringify(newData))
-    //console.log(newData)
-    newData = JSON.parse(jsonStr)
-      //  console.log(jsonStr)
-      //console.log('NEWDATA___' + newData)
-    cpuData.push(JSON.parse(jsonStr))
+    if (cpuData.hasOwnProperty(message.serial)) {
+      var json1 = {}
+      json1['date'] = message.date
+      for (var key in Object.keys(message.load)) {
+        json1[message.load[key].cpu] = message.load[key].value
+      }
+      cpuData[message.serial].push(json1)
+
+    } else {
+      cpuData[message.serial] = []
+
+      var json = {}
+      json['date'] = message.date
+      for (var key in Object.keys(message.load)) {
+        json[message.load[key].cpu] = message.load[key].value
+      }
+      cpuData[message.serial].push(json)
+    }
+
   })
 
   socket.on('device.memoryPerformance', function(message) {
-    var str = ""
 
-    setMemTotal([message.load[0].value / 1024])
-    str += ', "Memory used" : ' + (message.load[0].value - message.load[1]
-      .value) / 1024
-    var jsonStr = '{ ' + '"date" : ' + '"' + message.date + '"' +
-      str + ' }'
+    if (memoryData.hasOwnProperty(message.serial)) {
+      var json1 = {
+        'date': message.date,
+        'Memory used': (message.load[0].value - message.load[1].value) / 1024
+      }
+      memoryData[message.serial].push(json1)
 
-    memoryData.push(JSON.parse(jsonStr))
+    } else {
+
+      memTotal[message.serial] = ([message.load[0].value / 1024])
+      memoryData[message.serial] = []
+      var json = {
+        'date': message.date,
+        'Memory used': (message.load[0].value - message.load[1].value) / 1024
+      }
+      memoryData[message.serial].push(json)
+
+    }
+
   })
 
   var startPerformance = function() {
     //  ControlService.startPerformance()
   }
 
-  var stopPerformance = function() {
+  var stopPerformance = function(serial) {
     //ControlService.stopPerformance()
-    setCpuData([])
-    setMemoryData([])
-  }
-
-  function setCpuData(values) {
-    angular.copy(values, cpuData)
-  }
-
-  function setMemoryData(values) {
-    angular.copy(values, memoryData)
-  }
-
-  function setMemTotal(value) {
-    angular.copy(value, memTotal)
+    delete cpuData[serial]
+    delete memoryData[serial]
+    delete memTotal[serial]
   }
 
   return {
@@ -61,8 +67,5 @@ module.exports = function PerformanceServiceFactory(socket,
     stopPerformance: stopPerformance,
     getMemoryData: memoryData,
     getMemTotal: memTotal,
-    getNewData: function() {
-      return newData;
-    }
   }
 }

@@ -68,7 +68,7 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
 
   var draw = function() {
 
-    performanceData = PerformanceService.getCpuData
+    performanceData = PerformanceService.getCpuData[$scope.device.serial]
     x.range([0, width])
 
     x.domain(commons.d3.extent(performanceData, function(d) {

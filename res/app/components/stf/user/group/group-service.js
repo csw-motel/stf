@@ -1,12 +1,9 @@
 var Promise = require('bluebird')
 
 module.exports = function GroupServiceFactory(
-  socket
-, TransactionService
-, TransactionError
+  socket, TransactionService, TransactionError, PerformanceService
 ) {
-  var groupService = {
-  }
+  var groupService = {}
 
   groupService.invite = function(device) {
     if (!device.usable) {
@@ -17,8 +14,8 @@ module.exports = function GroupServiceFactory(
     socket.emit('group.invite', device.channel, tx.channel, {
       requirements: {
         serial: {
-          value: device.serial
-        , match: 'exact'
+          value: device.serial,
+          match: 'exact'
         }
       }
     })
@@ -35,13 +32,13 @@ module.exports = function GroupServiceFactory(
     if (!force && !device.usable) {
       return Promise.reject(new Error('Device is not usable'))
     }
-
+    PerformanceService.stopPerformance(device.serial)
     var tx = TransactionService.create(device)
     socket.emit('group.kick', device.channel, tx.channel, {
       requirements: {
         serial: {
-          value: device.serial
-        , match: 'exact'
+          value: device.serial,
+          match: 'exact'
         }
       }
     })
