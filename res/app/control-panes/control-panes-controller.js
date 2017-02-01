@@ -59,13 +59,15 @@ module.exports =
           return GroupService.invite(device)
         })
         .then(function(device) {
-          //  PerformanceService.startPerformance()
+
 
           $scope.device = device
           $scope.control = ControlService.create(device, device.channel)
           $scope.control.startPerformance()
-            // TODO: Change title, flickers too much on Chrome
-            // $rootScope.pageTitle = device.name
+            //PerformanceService.startPerformance(device.serial)
+
+          // TODO: Change title, flickers too much on Chrome
+          // $rootScope.pageTitle = device.name
 
           SettingsService.set('lastUsedDevice', serial)
 

@@ -204,9 +204,8 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
     // reset x range
     x.range([0, width])
 
-    // update chart
-    update()
   }
+
   drawMemory()
   var memInterval = setInterval(update, commons.interval)
 

@@ -5,7 +5,7 @@ module.exports = function PerformanceServiceFactory(socket, ControlService) {
   var memTotal = {}
 
   socket.on('device.cpuPerformance', function(message) {
-
+    console.log(JSON.stringify(message))
     if (cpuData.hasOwnProperty(message.serial)) {
       var json1 = {}
       json1['date'] = message.date
@@ -30,6 +30,7 @@ module.exports = function PerformanceServiceFactory(socket, ControlService) {
   socket.on('device.memoryPerformance', function(message) {
 
     if (memoryData.hasOwnProperty(message.serial)) {
+      memTotal[message.serial] = ([message.load[0].value / 1024])
       var json1 = {
         'date': message.date,
         'Memory used': (message.load[0].value - message.load[1].value) / 1024
@@ -39,7 +40,7 @@ module.exports = function PerformanceServiceFactory(socket, ControlService) {
     } else {
 
       memTotal[message.serial] = ([message.load[0].value / 1024])
-      memoryData[message.serial] = []
+        //  memoryData[message.serial] = []
       var json = {
         'date': message.date,
         'Memory used': (message.load[0].value - message.load[1].value) / 1024
@@ -50,8 +51,10 @@ module.exports = function PerformanceServiceFactory(socket, ControlService) {
 
   })
 
-  var startPerformance = function() {
+  var startPerformance = function(serial) {
     //  ControlService.startPerformance()
+    memoryData[serial] = []
+
   }
 
   var stopPerformance = function(serial) {
