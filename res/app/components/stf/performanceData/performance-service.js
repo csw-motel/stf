@@ -5,7 +5,6 @@ module.exports = function PerformanceServiceFactory(socket, ControlService) {
   var memTotal = {}
 
   socket.on('device.cpuPerformance', function(message) {
-
     if (cpuData.hasOwnProperty(message.serial)) {
       var json1 = {}
       json1['date'] = message.date
