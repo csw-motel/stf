@@ -182,9 +182,6 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
 
     // reset x range
     x.range([0, width])
-
-    // update chart
-    update()
   }
 
   draw()
