@@ -64,7 +64,7 @@ module.exports =
           $scope.device = device
           $scope.control = ControlService.create(device, device.channel)
           $scope.control.startPerformance()
-            //PerformanceService.startPerformance(device.serial)
+          PerformanceService.startPerformance(device.serial)
 
           // TODO: Change title, flickers too much on Chrome
           // $rootScope.pageTitle = device.name

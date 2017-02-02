@@ -5,24 +5,15 @@ module.exports = function PerformanceServiceFactory(socket, ControlService) {
   var memTotal = {}
 
   socket.on('device.cpuPerformance', function(message) {
-    console.log(JSON.stringify(message))
+
     if (cpuData.hasOwnProperty(message.serial)) {
-      var json1 = {}
-      json1['date'] = message.date
-      for (var key in Object.keys(message.load)) {
-        json1[message.load[key].cpu] = message.load[key].value
-      }
-      cpuData[message.serial].push(json1)
-
-    } else {
-      cpuData[message.serial] = []
-
       var json = {}
       json['date'] = message.date
       for (var key in Object.keys(message.load)) {
         json[message.load[key].cpu] = message.load[key].value
       }
       cpuData[message.serial].push(json)
+
     }
 
   })
@@ -31,16 +22,6 @@ module.exports = function PerformanceServiceFactory(socket, ControlService) {
 
     if (memoryData.hasOwnProperty(message.serial)) {
       memTotal[message.serial] = ([message.load[0].value / 1024])
-      var json1 = {
-        'date': message.date,
-        'Memory used': (message.load[0].value - message.load[1].value) / 1024
-      }
-      memoryData[message.serial].push(json1)
-
-    } else {
-
-      memTotal[message.serial] = ([message.load[0].value / 1024])
-        //  memoryData[message.serial] = []
       var json = {
         'date': message.date,
         'Memory used': (message.load[0].value - message.load[1].value) / 1024
@@ -48,13 +29,15 @@ module.exports = function PerformanceServiceFactory(socket, ControlService) {
       memoryData[message.serial].push(json)
 
     }
-
   })
 
   var startPerformance = function(serial) {
     //  ControlService.startPerformance()
-    memoryData[serial] = []
 
+    if (!memoryData.hasOwnProperty(serial) && !cpuData.hasOwnProperty(serial)) {
+      memoryData[serial] = []
+      cpuData[serial] = []
+    }
   }
 
   var stopPerformance = function(serial) {

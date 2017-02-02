@@ -9,7 +9,7 @@ module.exports = function GroupServiceFactory(
     if (!device.usable) {
       return Promise.reject(new Error('Device is not usable'))
     }
-    PerformanceService.startPerformance(device.serial)
+    //PerformanceService.startPerformance(device.serial)
     var tx = TransactionService.create(device)
     socket.emit('group.invite', device.channel, tx.channel, {
       requirements: {
