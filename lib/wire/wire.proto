@@ -653,7 +653,8 @@ message DevicePlugPlayMessage {
   required string platform = 2;
   required string model = 3; 
   required string version = 4;
-  required ProviderMessage provider = 5;
+  required string manufacturer = 5;
+  required ProviderMessage provider = 6;
 }
 
 message PlugPlayListMessage {
