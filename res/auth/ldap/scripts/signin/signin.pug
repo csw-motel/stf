@@ -17,7 +17,7 @@
           input.form-control(ng-model='username', name='username', required, type='text', placeholder='Username',
           autocorrect='off', autocapitalize='off', spellcheck='false', autocomplete='section-login username')
         .alert.alert-warning(ng-show='signin.username.$dirty && signin.username.$invalid')
-          span(ng-show='signin.username.$error.required', translate) Please enter your LDAP username
+          span(ng-show='signin.username.$error.required', translate) Please enter your username
 
       .form-group
         .input-group
