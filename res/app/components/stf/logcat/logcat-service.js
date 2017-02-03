@@ -45,7 +45,7 @@ module.exports = function LogcatServiceFactory(socket, FilterStringService) {
     'priority'
   ])
 
-  service.entries = []
+  service.entries = {}
 
   service.logLevels = [
     'UNKNOWN',
@@ -90,9 +90,15 @@ module.exports = function LogcatServiceFactory(socket, FilterStringService) {
   }
 
   socket.on('logcat.entry', function(rawData) {
+    console.log(JSON.stringify(rawData))
     service.numberOfEntries++
-      service.entries.push(enhanceEntry(rawData))
-
+      //  service.entries.push(enhanceEntry(rawData))
+      if (!service.entries.hasOwnProperty(rawData.serial)) {
+        service.entries[rawData.serial] = []
+        service.entries[rawData.serial].push(enhanceEntry(rawData))
+      } else {
+        service.entries[rawData.serial].push(enhanceEntry(rawData))
+      }
     if (typeof(service.addEntryListener) === 'function') {
       if (filterLine(rawData)) {
         service.addEntryListener(rawData)
