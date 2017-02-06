@@ -14,6 +14,9 @@ module.exports = function EnhanceDeviceServiceFactory($filter, AppState) {
         case 2:
           data.state = 'unauthorized'
           break
+        case 4: 
+            data.state = 'available_soon'
+        break
         case 3:
           data.state = 'preparing'
           if (data.ready) {
