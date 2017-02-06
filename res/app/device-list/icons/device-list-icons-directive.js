@@ -82,7 +82,7 @@ module.exports = function DeviceListIconsDirective(
           name.classList.remove('state-available')
         }
         if(device.state === "unauthorized" && device.platform === "ios"){
-          name.classList.add('state-available');
+          li.classList.add('state-available');
         }
         if (device.usable) {
           a.href = '#!/control/' + device.serial
