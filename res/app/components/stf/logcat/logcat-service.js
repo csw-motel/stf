@@ -98,6 +98,7 @@ module.exports = function LogcatServiceFactory(socket, FilterStringService) {
         service.addEntryListener(rawData)
       }
     }
+    console.log(JSON.stringify(service.entries))
   })
 
   service.clear = function() {
