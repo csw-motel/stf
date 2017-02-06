@@ -357,7 +357,7 @@ module.exports = function DeviceListDetailsDirective(
            tr.classList.add('device-not-usable')
         }
 
-        if (!device.usable && device.state == "unauthorized") {
+        if (!device.usable && device.state == "unauthorized" && device.platform == "ios") {
            tr.classList.remove('device-not-usable')
         }
 
