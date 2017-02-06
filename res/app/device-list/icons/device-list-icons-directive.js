@@ -81,7 +81,7 @@ module.exports = function DeviceListIconsDirective(
         } else {
           name.classList.remove('state-available')
         }
-        if(!device.usable && device.state == "unauthorized" && device.platform == "ios"){
+        if(device.state === "unauthorized" && device.platform === "ios"){
           name.classList.add('state-available');
         }
         if (device.usable) {
