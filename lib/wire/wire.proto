@@ -90,6 +90,9 @@ enum MessageType {
   LoadMemory                 = 207;
   TokenAuthMessage           = 208;
   AuthResponseMessage        = 209;
+  RequestListPlugAndPlayMessage     = 210;
+  DevicePlugPlayMessage      = 211;
+  PlugPlayListMessage        = 212;
 
 }
 
@@ -641,3 +644,20 @@ message AuthResponseMessage {
   required string description = 3;
   optional string useremail = 4;
 }
+
+message RequestListPlugAndPlayMessage {
+}
+
+message DevicePlugPlayMessage {
+  required string serial = 1;
+  required string platform = 2;
+  required string model = 3; 
+  required string version = 4;
+  required string manufacturer = 5;
+  required ProviderMessage provider = 6;
+}
+
+message PlugPlayListMessage {
+  repeated DevicePlugPlayMessage list = 1;
+}
+ 
