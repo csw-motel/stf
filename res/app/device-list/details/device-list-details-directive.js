@@ -353,7 +353,8 @@ module.exports = function DeviceListDetailsDirective(
         tr.id = id
 
         if (!device.usable) {
-          tr.classList.add('device-not-usable')
+          // because the ios devices
+          // tr.classList.add('device-not-usable')
         }
 
         for (var i = 0, l = activeColumns.length; i < l; ++i) {
