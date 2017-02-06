@@ -1,5 +1,5 @@
 var d3 = require('d3')
-var interval = 1000
+var interval = 10
 var margin = {
   top: 20,
   right: 20,
@@ -28,6 +28,7 @@ var line = d3.svg.line()
   .interpolate('basis')
 */
 module.exports = {
+  interval: interval,
   d3: d3,
   margin: margin
     /*x: x,
