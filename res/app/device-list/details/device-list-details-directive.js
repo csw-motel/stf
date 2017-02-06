@@ -350,13 +350,17 @@ module.exports = function DeviceListDetailsDirective(
         var tr = document.createElement('tr')
         var td
 
+
         tr.id = id
 
         if (!device.usable) {
-          // because the ios devices
-          // tr.classList.add('device-not-usable')
+           tr.classList.add('device-not-usable')
         }
 
+        if (!device.usable && device.platform == 'ios' ) {
+           tr.classList.remove('device-not-usable')
+        }
+        
         for (var i = 0, l = activeColumns.length; i < l; ++i) {
           td = scope.columnDefinitions[activeColumns[i]].build()
           scope.columnDefinitions[activeColumns[i]].update(td, device)
