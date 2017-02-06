@@ -47,11 +47,13 @@ body {
 .login2 .login-wrapper input[type="submit"] {
     padding: 10px 0 12px;
     margin: 20px 0 30px;
+    background: #287992;
+    border-color:  #287992;
 }
 
 .login2 .login-wrapper input[type="submit"]:hover {
     background: #287992;
-    border-color: #287992;
+    border-color: white;
     color: white;
 }
 
