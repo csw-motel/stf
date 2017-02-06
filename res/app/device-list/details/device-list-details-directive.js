@@ -357,10 +357,10 @@ module.exports = function DeviceListDetailsDirective(
            tr.classList.add('device-not-usable')
         }
 
-        if (!device.usable && device.platform == 'ios' ) {
+        if (!device.usable && device.state == "unauthorized") {
            tr.classList.remove('device-not-usable')
         }
-        
+
         for (var i = 0, l = activeColumns.length; i < l; ++i) {
           td = scope.columnDefinitions[activeColumns[i]].build()
           scope.columnDefinitions[activeColumns[i]].update(td, device)
