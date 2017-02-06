@@ -63,7 +63,7 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
         .tickFormat('')
       )*/
 
-  y.range([height, 0]).domain([0, PerformanceService.getMemTotal])
+  y.range([height, 0]).domain([0, PerformanceService.getMemTotal[$scope.device.serial]])
 
   var y_axis = memoryChart.append('g')
     .attr('class', 'y axis')
@@ -93,7 +93,7 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
   var memory, memoryData
   var drawMemory = function() {
 
-    memoryData = PerformanceService.getMemoryData
+    memoryData = PerformanceService.getMemoryData[$scope.device.serial]
     x.domain(commons.d3.extent(memoryData, function(d) {
       return new Date(d.date * 1000)
     }))
@@ -204,9 +204,8 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
     // reset x range
     x.range([0, width])
 
-    // update chart
-    update()
   }
+
   drawMemory()
   var memInterval = setInterval(update, commons.interval)
 

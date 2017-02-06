@@ -660,4 +660,4 @@ message DevicePlugPlayMessage {
 message PlugPlayListMessage {
   repeated DevicePlugPlayMessage list = 1;
 }
- 
+
