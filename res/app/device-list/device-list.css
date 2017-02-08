@@ -20,6 +20,10 @@
   cursor: not-allowed;
 }
 
+.stf-device-list .btnLock{
+  cursor: not-allowed;
+}
+
 .stf-device-list .devices-not-available {
   background: #f6f6f6;
 }

@@ -357,8 +357,8 @@ module.exports = function DeviceListDetailsDirective(
            tr.classList.add('device-not-usable')
         }
 
-        if (!device.usable && device.state == "unauthorized" && device.platform == "ios") {
-           tr.classList.remove('device-not-usable')
+        if (!device.usable && device.platform == "ios") {
+           tr.classList.add('btnLock')
         }
 
         for (var i = 0, l = activeColumns.length; i < l; ++i) {
