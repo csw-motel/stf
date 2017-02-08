@@ -72,7 +72,8 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
     .attr('transform', 'rotate(-90)')
     .attr('y', 6)
     .attr('dy', '.71em')
-    //Create Y axis label
+
+  //Create Y axis label
   memoryChart.append('text')
     .attr('transform', 'rotate(-90)')
     .attr('y', 0 - commons.margin.left)
@@ -83,14 +84,13 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
 
   var color = commons.d3.scale.ordinal().range(['#b0c4de'])
 
-
-
   var x_axis = memoryChart.append('g')
     .attr('class', 'x axis')
     .attr('transform', 'translate(0,' + height + ')')
     .call(xAxis)
 
   var memory, memoryData
+
   var drawMemory = function() {
 
     memoryData = PerformanceService.getMemoryData[$scope.device.serial]
@@ -114,7 +114,6 @@ module.exports = function MemoryCtrl($scope, PerformanceService) {
         })
       }
     })
-
 
     var legend = memoryChart.selectAll('.g')
       .data(memorys)

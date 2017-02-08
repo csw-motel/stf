@@ -24,17 +24,23 @@ module.exports =
         }
 
         LogcatService.addEntryListener = function(entry) {
+          console.log('XX')
+            //  if (scope.device.serial === entry.serial) {
           incrementNumberEntry()
+
           addRow(body, entry)
+            //}
         }
 
         LogcatService.addFilteredEntriesListener = function(entries) {
           clearTable()
-          //var fragment = document.createDocumentFragment()
+            //var fragment = document.createDocumentFragment()
           _.each(entries, function(entry) {
             // TODO: This is not adding all the entries after first scope creation
-            incrementNumberEntry()
-            addRow(body, entry, true)
+            if (scope.device.serial === entry.serial) {
+              incrementNumberEntry()
+              addRow(body, entry, true)
+            }
           })
         }
 
@@ -71,6 +77,8 @@ module.exports =
           //newRow.insertCell(-1)
           //  .appendChild(document.createTextNode(data.deviceLabel))
           newRow.insertCell(-1)
+            .appendChild(document.createTextNode(data.serial))
+          newRow.insertCell(-1)
             .appendChild(document.createTextNode(data.priorityLabel))
           newRow.insertCell(-1)
             .appendChild(document.createTextNode(data.dateLabel))
@@ -79,8 +87,8 @@ module.exports =
               .appendChild(document.createTextNode(data.pid))
             newRow.insertCell(-1)
               .appendChild(document.createTextNode(data.tid))
-            //newRow.insertCell(-1)
-            //  .appendChild(document.createTextNode(data.app))
+              //newRow.insertCell(-1)
+              //  .appendChild(document.createTextNode(data.app))
             newRow.insertCell(-1)
               .appendChild(document.createTextNode(data.tag))
           }

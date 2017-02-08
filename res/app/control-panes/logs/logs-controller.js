@@ -1,8 +1,9 @@
 module.exports = function LogsCtrl($scope, LogcatService) {
 
   $scope.started = LogcatService.started
-
   $scope.filters = {}
+  var util = require('util')
+  console.log('LLL____' + util.inspect($scope))
 
   $scope.filters.levelNumbers = LogcatService.filters.levelNumbers
 

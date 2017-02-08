@@ -1,5 +1,8 @@
 module.exports = function CpuCtrl($scope, PerformanceService) {
+  var util = require('util')
+  console.log('sss__' + util.inspect($scope))
 
+  console.log('ppp___' + util.inspect($scope.device))
   var commons = require('./../commons.js')
   var jQuery = require('jquery')
 
@@ -184,7 +187,6 @@ module.exports = function CpuCtrl($scope, PerformanceService) {
 
     // reset x range
     x.range([0, width])
-
   }
 
   draw()

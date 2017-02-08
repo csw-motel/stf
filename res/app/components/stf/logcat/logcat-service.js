@@ -5,7 +5,7 @@ module.exports = function LogcatServiceFactory(socket, FilterStringService) {
   var service = {}
   service.started = false
   service.numberOfEntries = 0
-
+  service.serial = 0
   service.serverFilters = [{
     tag: '',
     priority: 2
@@ -45,7 +45,7 @@ module.exports = function LogcatServiceFactory(socket, FilterStringService) {
     'priority'
   ])
 
-  service.entries = {}
+  service.entries = []
 
   service.logLevels = [
     'UNKNOWN',
@@ -90,21 +90,25 @@ module.exports = function LogcatServiceFactory(socket, FilterStringService) {
   }
 
   socket.on('logcat.entry', function(rawData) {
-    console.log(JSON.stringify(rawData))
+    //  console.log(JSON.stringify(rawData))
     service.numberOfEntries++
-      //  service.entries.push(enhanceEntry(rawData))
-      if (!service.entries.hasOwnProperty(rawData.serial)) {
+      service.entries.push(enhanceEntry(rawData))
+      /*if (!service.entries.hasOwnProperty(rawData.serial)) {
         service.entries[rawData.serial] = []
         service.entries[rawData.serial].push(enhanceEntry(rawData))
       } else {
         service.entries[rawData.serial].push(enhanceEntry(rawData))
-      }
+      }*/
     if (typeof(service.addEntryListener) === 'function') {
       if (filterLine(rawData)) {
+        console.log('AA__' + service.serial);
+
         service.addEntryListener(rawData)
+        console.log('BB');
+
       }
     }
-    console.log(JSON.stringify(service.entries))
+    //  console.log(JSON.stringify(service.entries))
   })
 
   service.clear = function() {

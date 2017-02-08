@@ -1,8 +1,8 @@
 var _ = require('lodash')
 
 module.exports = function DeviceControlCtrl($scope, DeviceService, GroupService,
-  $location, $timeout, $window, $rootScope, PerformanceService) {
-
+  $location, $timeout, $window, $rootScope, PerformanceService, LogcatService) {
+  LogcatService.serial = 'aaaaa'
   $scope.showScreen = true
 
   $scope.groupTracker = DeviceService.trackGroup($scope)
