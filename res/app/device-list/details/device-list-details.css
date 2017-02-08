@@ -15,3 +15,7 @@
 .device-list-details-content .device-status.state-available {
   font-weight: 600;
 }
+
+.device-lock {
+	cursor: not-allowed;
+}

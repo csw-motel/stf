@@ -91,8 +91,8 @@ module.exports = function DeviceListIconsDirective(
           li.classList.add('device-is-busy')
         }
 
-        if(device.platform === "ios"){
-          li.classList.add('btnLock')
+        if(device.manufacturer == "Apple"){
+          li.classList.add('device-lock')
         }
 
         return li

@@ -357,8 +357,8 @@ module.exports = function DeviceListDetailsDirective(
            tr.classList.add('device-not-usable')
         }
 
-        if (!device.usable && device.platform == "ios") {
-           tr.classList.add('btnLock')
+        if(device.manufacturer == "Apple"){
+          tr.classList.add('device-lock')
         }
 
         for (var i = 0, l = activeColumns.length; i < l; ++i) {
