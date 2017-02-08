@@ -526,7 +526,11 @@ function DeviceNameCell(options) {
   , defaultOrder: 'asc'
   , build: function() {
       var td = document.createElement('td')
-      var a = document.createElement('a')
+      if(device.manufacturer != 'Apple'){
+        var a = document.createElement('a')
+      } else {
+        var a =  document.createElement('span')
+      }
       a.appendChild(document.createTextNode(''))
       td.appendChild(a)
       return td
