@@ -362,8 +362,16 @@ module.exports = function DeviceListDetailsDirective(
         }
 
         for (var i = 0, l = activeColumns.length; i < l; ++i) {
-          td = scope.columnDefinitions[activeColumns[i]].build()
-          scope.columnDefinitions[activeColumns[i]].update(td, device)
+          var columnKey = activeColumns[i]
+          td = scope.columnDefinitions[columnKey].build()
+          scope.columnDefinitions[columnKey].update(td, device)
+
+          if (device.manufacturer == "Apple" && 
+              typeof scope.columnDefinitions[columnKey] === 'LinkCell') {
+
+            columnKey = 'serial';
+          }
+
           tr.appendChild(td)
         }
 
