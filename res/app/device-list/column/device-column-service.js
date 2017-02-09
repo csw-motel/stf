@@ -605,10 +605,10 @@ function DeviceStatusCell(options) {
       t.nodeValue = options.value(device)
 
       if(device.manufacturer == 'Apple'){
-        a.className = 'state-unauthorized btn-danger-outline'
+        a.className = ''
         a.removeAttribute('href')
       }
-      
+
       return td
     }
   , compare: (function() {
