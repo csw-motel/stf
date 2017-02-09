@@ -548,6 +548,11 @@ function DeviceNameCell(options) {
         a.removeAttribute('href')
       }
 
+      if(device.manufacturer == 'Apple'){
+        a.className = 'device-product-name-unusable'
+        a.removeAttribute('href')
+      }
+
       t.nodeValue = options.value(device)
 
       return td
