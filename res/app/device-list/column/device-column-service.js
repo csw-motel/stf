@@ -604,8 +604,8 @@ function DeviceStatusCell(options) {
 
       t.nodeValue = options.value(device)
 
-      if(device.manufacturer == 'Apple'){
-        a.className = ''
+      if(device.manufacturer == 'Apple' && device.status == 3){
+        a.className = 'btn btn-xs device-status btn-default-outline'
         a.removeAttribute('href')
       }
 
