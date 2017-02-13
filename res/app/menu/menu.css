@@ -71,3 +71,7 @@
   height: 44px !important;
   min-height: 44px !important;
 }
+
+.stf-menu.nativeweb {
+  color: white;
+}
