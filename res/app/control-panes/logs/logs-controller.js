@@ -10,7 +10,6 @@ module.exports = function LogsCtrl($scope, LogcatService) {
   $scope.$watch('started', function(newValue, oldValue) {
 
     if (newValue !== oldValue) {
-      //  LogcatService.started = newValue
       LogcatService.started[LogcatService.serialInUse] = newValue
       if (newValue) {
         $scope.control.startLogcat([]).then(function() {})
