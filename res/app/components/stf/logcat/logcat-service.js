@@ -3,8 +3,11 @@ var _s = require('underscore.string')
 
 module.exports = function LogcatServiceFactory(socket, FilterStringService) {
   var service = {}
-  service.started = false
-  service.numberOfEntries = 0
+
+  service.serialInUse = 0
+
+  service.started = {}
+  service.started[service.serialInUse] = false
 
   service.serverFilters = [{
     tag: '',
@@ -45,7 +48,7 @@ module.exports = function LogcatServiceFactory(socket, FilterStringService) {
     'priority'
   ])
 
-  service.entries = []
+  service.entries = {}
 
   service.logLevels = [
     'UNKNOWN',
@@ -90,27 +93,31 @@ module.exports = function LogcatServiceFactory(socket, FilterStringService) {
   }
 
   socket.on('logcat.entry', function(rawData) {
-    service.numberOfEntries++
-      service.entries.push(enhanceEntry(rawData))
-
+    if (!service.entries.hasOwnProperty(rawData.serial)) {
+      service.entries[rawData.serial] = []
+    }
+    service.entries[rawData.serial].push(enhanceEntry(rawData))
     if (typeof(service.addEntryListener) === 'function') {
       if (filterLine(rawData)) {
-        service.addEntryListener(rawData)
+
+        if (rawData.serial === service.serialInUse) {
+          service.addEntryListener(rawData)
+        }
+
       }
     }
-    console.log(JSON.stringify(service.entries))
   })
 
   service.clear = function() {
-    service.numberOfEntries = 0
-    service.entries = []
+    service.entries[service.serialInUse] = []
   }
 
   service.filters.filterLines = function() {
-    service.filters.entries = _.filter(service.entries, filterLine)
+    service.filters.entries = _.filter(service.entries[service.serialInUse], filterLine)
 
     if (typeof(service.addFilteredEntriesListener) === 'function') {
       service.addFilteredEntriesListener(service.filters.entries)
+
     }
   }
 

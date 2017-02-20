@@ -1,23 +1,23 @@
 module.exports = function LogsCtrl($scope, LogcatService) {
 
-  $scope.started = LogcatService.started
+  $scope.started = LogcatService.started[LogcatService.serialInUse]
 
   $scope.filters = {}
 
   $scope.filters.levelNumbers = LogcatService.filters.levelNumbers
-
   LogcatService.filters.filterLines()
 
   $scope.$watch('started', function(newValue, oldValue) {
+
     if (newValue !== oldValue) {
-      LogcatService.started = newValue
+      LogcatService.started[LogcatService.serialInUse] = newValue
       if (newValue) {
         $scope.control.startLogcat([]).then(function() {})
       } else {
         $scope.control.stopLogcat()
       }
     }
-  })
+  }, true)
 
   window.onbeforeunload = function() {
     if ($scope.control) {
