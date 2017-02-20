@@ -1,8 +1,7 @@
 var Promise = require('bluebird')
 
 module.exports = function GroupServiceFactory(
-  socket, TransactionService, TransactionError, PerformanceService
-) {
+  socket, TransactionService, TransactionError, PerformanceService) {
   var groupService = {}
 
   groupService.invite = function(device) {

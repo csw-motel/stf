@@ -1,7 +1,7 @@
 module.exports =
   function ControlPanesController($scope, $http, gettext, $routeParams,
     $timeout, $location, DeviceService, GroupService, ControlService,
-    StorageService, FatalMessageService, SettingsService, PerformanceService) {
+    StorageService, FatalMessageService, SettingsService, PerformanceService, LogcatService) {
 
     var sharedTabs = [{
       title: gettext('Screenshots'),
@@ -54,12 +54,12 @@ module.exports =
 
     // TODO: Move this out to Ctrl.resolve
     function getDevice(serial) {
+      LogcatService.serialInUse = serial
       DeviceService.get(serial, $scope)
         .then(function(device) {
           return GroupService.invite(device)
         })
         .then(function(device) {
-
 
           $scope.device = device
           $scope.control = ControlService.create(device, device.channel)
