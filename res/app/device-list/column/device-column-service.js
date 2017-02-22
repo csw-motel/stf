@@ -548,8 +548,8 @@ function DeviceNameCell(options) {
         a.removeAttribute('href')
       }
 
-      if(device.manufacturer == 'Apple' && device.status == 3){
-        a.className = 'device-product-name-unusable'
+      if(device.manufacturer == 'Apple' && device.status == 3 && device.present){
+        a.className = 'device-product-name-unusable device-lock'
         a.removeAttribute('href')
       }
 
@@ -604,8 +604,8 @@ function DeviceStatusCell(options) {
 
       t.nodeValue = options.value(device)
 
-      if(device.manufacturer == 'Apple' && device.status == 3){
-        a.className = 'btn btn-xs device-status btn-default-outline'
+      if(device.manufacturer == 'Apple' && device.status == 3 && device.present){
+        a.className = 'btn btn-xs device-status btn-default-outline device-lock'
         a.removeAttribute('href')
       }
 
