@@ -363,12 +363,6 @@ module.exports = function DeviceListDetailsDirective(
 
         for (var i = 0, l = activeColumns.length; i < l; ++i) {
           var columnKey = activeColumns[i]
-         /*if ((device.manufacturer == "Apple" && 
-              scope.columnDefinitions[columnKey].title === 'Status') ||
-             (device.manufacturer == "Apple" && 
-              scope.columnDefinitions[columnKey].title === 'Product') ) {
-              columnKey = 'serial';
-          }*/
           td = scope.columnDefinitions[columnKey].build()
           scope.columnDefinitions[columnKey].update(td, device)
 
