@@ -1,10 +1,10 @@
 .stf-menu .stf-logo {
-  background: url(../../common/logo/exports/STF-512.png) no-repeat 0 0;
-  width: 32px;
-  height: 32px;
+  background: url(../../common/logo/exports/motel.png) no-repeat 0 0;
+  width: 50px;
+  height: 50px;
   float: left;
   text-indent: -9999em;
-  margin: 6px 10px 0 0;
+  margin: 10px 10px 0 0;
   background-size: 100% auto;
   -webkit-background-size: 100% auto;
 }
@@ -14,6 +14,7 @@
   padding: 0 10px 0 20px;
   width: 100%;
   float: left;
+  background: #55A5BC;
 }
 
 .stf-menu .stf-nav {
@@ -40,7 +41,7 @@
   padding-left: 14px !important;
   font-size: 15px;
   line-height: 44px;
-  color: #777777;
+  color: white;
   font-weight: 400;
   height: 44px;
   position: relative;
@@ -51,6 +52,11 @@
   float: left;
   margin: 8px 8px 0 0;
   font-size: 28px;
+  color: white;
+}
+
+.stf-menu .stf-nav > li > a.hover {
+  background-color: red;
 }
 
 .stf-menu .stf-nav > li > a > span.fa-mobile {
@@ -58,10 +64,14 @@
 }
 
 .stf-menu .stf-nav > li > a.current {
-  color: #007aff;
+  color: white;
 }
 
 .stf-menu.navbar {
   height: 44px !important;
   min-height: 44px !important;
+}
+
+.stf-menu.nativeweb {
+  color: white;
 }

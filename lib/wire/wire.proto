@@ -93,7 +93,6 @@ enum MessageType {
   RequestListPlugAndPlayMessage     = 210;
   DevicePlugPlayMessage      = 211;
   PlugPlayListMessage        = 212;
-
 }
 
 message ConnectStartedMessage {
@@ -660,4 +659,4 @@ message DevicePlugPlayMessage {
 message PlugPlayListMessage {
   repeated DevicePlugPlayMessage list = 1;
 }
- 
+

@@ -91,6 +91,12 @@ module.exports = function DeviceListIconsDirective(
           li.classList.add('device-is-busy')
         }
 
+        if(device.manufacturer == 'Apple' && device.status == 3 && device.present){
+          li.classList = 'cursor-select pointer thumbnail state-available device-lock'
+          a.classList.add('device-lock')
+          a.removeAttribute('href')
+        }
+
         return li
       }
     }

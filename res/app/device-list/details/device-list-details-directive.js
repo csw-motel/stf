@@ -350,15 +350,22 @@ module.exports = function DeviceListDetailsDirective(
         var tr = document.createElement('tr')
         var td
 
+
         tr.id = id
 
         if (!device.usable) {
-          tr.classList.add('device-not-usable')
+           tr.classList.add('device-not-usable')
+        }
+
+        if(device.manufacturer == "Apple"){
+          tr.classList.add('device-lock')
         }
 
         for (var i = 0, l = activeColumns.length; i < l; ++i) {
-          td = scope.columnDefinitions[activeColumns[i]].build()
-          scope.columnDefinitions[activeColumns[i]].update(td, device)
+          var columnKey = activeColumns[i]
+          td = scope.columnDefinitions[columnKey].build()
+          scope.columnDefinitions[columnKey].update(td, device)
+
           tr.appendChild(td)
         }
 
