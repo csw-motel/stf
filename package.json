@@ -83,7 +83,7 @@
     "stf-browser-db": "^1.0.2",
     "stf-device-db": "^1.2.0",
     "stf-syrup": "^1.0.0",
-    "stf-wiki": "^1.0.0",
+    "stf-wiki": "git+https://github.com/csw-motel/stf-wiki.git",
     "swagger-express-mw": "^0.7.0",
     "temp": "^0.8.1",
     "transliteration": "^1.1.6",
